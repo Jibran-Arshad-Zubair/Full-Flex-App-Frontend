@@ -1,13 +1,14 @@
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useState } from 'react';
 import Button from '../ui/Button';
-import { processPayment } from '../../services/paymentService';
+import { useCreatePaymentIntentMutation } from '../../Redux/queries/stripePayment/paymentApi';
 
 export default function CheckoutForm({ onSuccess, onError }) {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+   const [createPaymentIntent] = useCreatePaymentIntentMutation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,13 +18,13 @@ export default function CheckoutForm({ onSuccess, onError }) {
     setError(null);
 
     try {
-      // 1. Create payment intent (call your backend)
-      const { clientSecret } = await processPayment({
-        amount: 1099, // $10.99 in cents
-        currency: 'usd'
-      });
+    
+      const { clientSecret } = await createPaymentIntent({
+        amount: 1099, 
+        currency: 'pkr'
+      }).unwrap();
 
-      // 2. Confirm payment with Stripe
+     
       const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement),
