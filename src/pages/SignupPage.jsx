@@ -1,56 +1,83 @@
-import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import InputField from '../components/ui/InputField';
-import SelectField from '../components/ui/SelectField';
-import Button from '../components/ui/Buttonlogin';
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import InputField from "../components/ui/InputField";
+import SelectField from "../components/ui/SelectField";
+import Button from "../components/ui/Buttonlogin";
+import { useRegisterUserMutation } from "../Redux/queries/user/authApi";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const SignupPage = () => {
+  const navigate = useNavigate();
+
+  const [registerUser] = useRegisterUserMutation();
+
   const initialValues = {
-    email: '',
-    userName: '',
-    password: '',
-    fullName: '',
-    phoneNumber: '',
-    gender: ''
+    email: "",
+    userName: "",
+    password: "",
+    fullName: "",
+    phoneNumber: "",
+    gender: "",
   };
-  
+
   const validationSchema = Yup.object().shape({
     email: Yup.string()
-      .email('Invalid email address')
-      .required('Email is required'),
+      .email("Invalid email address")
+      .required("Email is required"),
     userName: Yup.string()
-      .min(3, 'Username must be at least 3 characters')
-      .max(20, 'Username must be at most 20 characters')
-      .required('Username is required'),
+      .min(3, "Username must be at least 3 characters")
+      .max(20, "Username must be at most 20 characters")
+      .required("Username is required"),
     password: Yup.string()
-      .min(6, 'Password must be at least 6 characters')
-      .required('Password is required'),
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
     fullName: Yup.string()
-      .min(3, 'Full name must be at least 3 characters')
-      .required('Full name is required'),
+      .min(3, "Full name must be at least 3 characters")
+      .required("Full name is required"),
     phoneNumber: Yup.string()
-      .matches(/^[0-9]+$/, 'Must be only digits')
-      .min(10, 'Must be at least 10 digits')
-      .max(15, 'Must be at most 15 digits')
-      .required('Phone number is required'),
-    gender: Yup.string()
-      .required('Gender is required')
+      .matches(/^[0-9]+$/, "Must be only digits")
+      .min(10, "Must be at least 10 digits")
+      .max(15, "Must be at most 15 digits")
+      .required("Phone number is required"),
+    gender: Yup.string().required("Gender is required"),
   });
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    console.log('Form submitted:', values);
-    
-    setTimeout(() => {
-      setSubmitting(false);
-    }, 1000);
-  };
+  const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
+    try {
+      const response = await registerUser(values).unwrap();
+      console.log("Registration successful:", response);
 
+      toast.success("Account created successfully! Redirecting...", {
+        position: "top-center",
+      });
+
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    } catch (err) {
+      console.error("Registration error:", err);
+      const errorMessage = err.data?.message || "Registration failed";
+
+      toast.error(errorMessage, {
+        position: "top-center",
+      });
+
+      if (err.status === 409 || errorMessage.includes("email already exists")) {
+        setFieldError("email", "Email already exists");
+      } else if (errorMessage) {
+        setFieldError("root", errorMessage);
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
   const genderOptions = [
-    { value: '', label: 'Select Gender' },
-    { value: 'male', label: 'Male' },
-    { value: 'female', label: 'Female' },
-    { value: 'other', label: 'Other' }
+    { value: "", label: "Select Gender" },
+    { value: "male", label: "Male" },
+    { value: "female", label: "Female" },
+    { value: "other", label: "Other" },
   ];
 
   return (
@@ -243,7 +270,7 @@ const SignupPage = () => {
                       htmlFor="terms"
                       className="ml-2 block text-sm text-gray-700"
                     >
-                      I agree to the{' '}
+                      I agree to the{" "}
                       <a href="#" className="text-blue-800 hover:text-blue-600">
                         Terms and Conditions
                       </a>
@@ -280,7 +307,7 @@ const SignupPage = () => {
                         Processing...
                       </>
                     ) : (
-                      'Sign Up'
+                      "Sign Up"
                     )}
                   </Button>
                 </Form>

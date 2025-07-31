@@ -1,9 +1,9 @@
 import React from 'react';
-import { ErrorMessage } from 'formik';
+import { ErrorMessage, Field } from 'formik';
 
-const InputField = ({ label, name, type, placeholder, icon, ...props }) => {
+const InputField = ({ label, name, type, placeholder, icon }) => {
   return (
-    <div>
+    <div className="mb-4">
       <label htmlFor={name} className="block text-sm font-medium text-gray-700">
         {label}
       </label>
@@ -13,18 +13,17 @@ const InputField = ({ label, name, type, placeholder, icon, ...props }) => {
             {icon}
           </div>
         )}
-        <input
+        <Field
           type={type}
           name={name}
           id={name}
           placeholder={placeholder}
-          className={`focus:ring-indigo-500 focus:border-indigo-500 block w-full ${icon ? 'pl-10' : 'pl-3'} pr-3 sm:text-sm border-gray-300 rounded-md py-2 border`}
-          {...props}
+          className={`focus:ring-indigo-500 focus:border-indigo-500 block w-full ${
+            icon ? "pl-10" : "pl-3"
+          } pr-3 sm:text-sm border-gray-300 rounded-md py-2 border`}
         />
       </div>
-      <ErrorMessage name={name}>
-        {(msg) => <p className="mt-1 text-sm text-red-600">{msg}</p>}
-      </ErrorMessage>
+      <ErrorMessage name={name} component="div" className="text-red-500 text-sm mt-1" />
     </div>
   );
 };

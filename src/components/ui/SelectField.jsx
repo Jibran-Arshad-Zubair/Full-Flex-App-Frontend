@@ -1,9 +1,9 @@
 import React from 'react';
-import { ErrorMessage } from 'formik';
+import { ErrorMessage, Field } from 'formik';
 
-const SelectField = ({ label, name, options, icon, ...props }) => {
+const SelectField = ({ label, name, options, icon }) => {
   return (
-    <div>
+    <div className="mb-4">
       <label htmlFor={name} className="block text-sm font-medium text-gray-700">
         {label}
       </label>
@@ -13,22 +13,22 @@ const SelectField = ({ label, name, options, icon, ...props }) => {
             {icon}
           </div>
         )}
-        <select
+        <Field
+          as="select"
           name={name}
           id={name}
-          className={`focus:ring-indigo-500 focus:border-indigo-500 block w-full ${icon ? 'pl-10' : 'pl-3'} pr-3 sm:text-sm border-gray-300 rounded-md py-2 border`}
-          {...props}
+          className={`focus:ring-indigo-500 focus:border-indigo-500 block w-full ${
+            icon ? "pl-10" : "pl-3"
+          } pr-3 sm:text-sm border-gray-300 rounded-md py-2 border`}
         >
           {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
           ))}
-        </select>
+        </Field>
       </div>
-      <ErrorMessage name={name}>
-        {(msg) => <p className="mt-1 text-sm text-red-600">{msg}</p>}
-      </ErrorMessage>
+      <ErrorMessage name={name} component="div" className="text-red-500 text-sm mt-1" />
     </div>
   );
 };
