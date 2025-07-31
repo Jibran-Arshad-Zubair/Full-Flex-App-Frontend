@@ -14,7 +14,7 @@ const SignupPage = () => {
     phoneNumber: '',
     gender: ''
   };
-
+  
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email('Invalid email address')
@@ -55,9 +55,9 @@ const SignupPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden md:max-w-2xl">
         <div className="md:flex">
-          <div className="hidden md:block md:w-1/2 bg-gradient-to-b from-indigo-500 to-purple-600">
+          <div className="hidden md:block md:w-1/2 bg-gradient-to-b from-cyan-400 to-blue-600">
             <div className="h-full flex items-center justify-center p-8">
               <div className="text-center">
                 <h2 className="text-3xl font-bold text-white mb-4">Welcome!</h2>
@@ -90,7 +90,7 @@ const SignupPage = () => {
               <div className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8 text-indigo-600"
+                  className="h-8 w-8 text-blue-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -118,7 +118,7 @@ const SignupPage = () => {
                     label="Full Name"
                     name="fullName"
                     type="text"
-                    placeholder="John Doe"
+                    placeholder="Jibran Arshad"
                     icon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -139,7 +139,7 @@ const SignupPage = () => {
                     label="Username"
                     name="userName"
                     type="text"
-                    placeholder="johndoe123"
+                    placeholder="jibran"
                     icon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +160,7 @@ const SignupPage = () => {
                     label="Email"
                     name="email"
                     type="email"
-                    placeholder="john@example.com"
+                    placeholder="jibran@example.com"
                     icon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -199,7 +199,7 @@ const SignupPage = () => {
                     label="Phone Number"
                     name="phoneNumber"
                     type="tel"
-                    placeholder="03451234567"
+                    placeholder="03445*******"
                     icon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -244,7 +244,7 @@ const SignupPage = () => {
                       className="ml-2 block text-sm text-gray-700"
                     >
                       I agree to the{' '}
-                      <a href="#" className="text-indigo-600 hover:text-indigo-500">
+                      <a href="#" className="text-blue-800 hover:text-blue-600">
                         Terms and Conditions
                       </a>
                     </label>
