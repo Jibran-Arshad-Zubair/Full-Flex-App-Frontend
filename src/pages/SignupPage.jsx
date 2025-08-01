@@ -49,19 +49,19 @@ const SignupPage = () => {
       const response = await registerUser(values).unwrap();
       console.log("Registration successful:", response);
 
-      toast.success("Account created successfully! Redirecting...", {
-        position: "top-center",
+      toast.success("Account created successfully! Redirecting...",response,{
+       
       });
-
       setTimeout(() => {
         navigate("/");
       }, 2000);
+      
     } catch (err) {
-      console.error("Registration error:", err);
+      console.error("errorrrrr", err);
       const errorMessage = err.data?.message || "Registration failed";
 
       toast.error(errorMessage, {
-        position: "top-center",
+        duration: 5000,
       });
 
       if (err.status === 409 || errorMessage.includes("email already exists")) {
@@ -259,24 +259,6 @@ const SignupPage = () => {
                     }
                   />
 
-                  <div className="flex items-center">
-                    <input
-                      id="terms"
-                      name="terms"
-                      type="checkbox"
-                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                    />
-                    <label
-                      htmlFor="terms"
-                      className="ml-2 block text-sm text-gray-700"
-                    >
-                      I agree to the{" "}
-                      <a href="#" className="text-blue-800 hover:text-blue-600">
-                        Terms and Conditions
-                      </a>
-                    </label>
-                  </div>
-
                   <Button
                     type="submit"
                     disabled={isSubmitting}
@@ -328,7 +310,7 @@ const SignupPage = () => {
 
               <div className="mt-6">
                 <a
-                  href="/login"
+                  href="/"
                   className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   Sign in
