@@ -39,7 +39,7 @@ const LoginPage = () => {
       }, 2000);
 
     } catch (err) {
-      console.error("Login error:", err);
+      console.error("Login error", err);
       const errorMessage = err.data?.message || "Login failed";
 
       toast.error(errorMessage, {

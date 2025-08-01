@@ -4,7 +4,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
 
 export const authApi = createApi({
   reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({ 
+  baseQuery: fetchBaseQuery({
     baseUrl: API_URL,
     prepareHeaders: (headers) => {
       headers.set('Content-Type', 'application/json');
@@ -16,24 +16,20 @@ export const authApi = createApi({
       query: (userData) => ({
         url: '/users/register',
         method: 'POST',
-        body: userData
+        body: userData,
       }),
-      invalidatesTags: ['User']
-    })
-  }),
-
-  loginUser: (builder) => ({
+      invalidatesTags: ['User'],
+    }),
     loginUser: builder.mutation({
       query: (userData) => ({
         url: '/users/login',
         method: 'POST',
-        body: userData
+        body: userData,
       }),
-      invalidatesTags: ['User']
-    })
+      invalidatesTags: ['User'],
+    }),
   }),
-
-
 });
 
-export const { useRegisterUserMutation , useLoginUserMutation } = authApi;
+
+export const { useRegisterUserMutation, useLoginUserMutation } = authApi;
