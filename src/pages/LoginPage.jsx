@@ -6,12 +6,13 @@ import Button from "../components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useLoginUserMutation } from "../Redux/queries/user/authApi";
-
+import { useDispatch } from "react-redux";
+import { setAuthUser } from "../Redux/reduxSlices/userSlice";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [loginUser] = useLoginUserMutation();
-
+  const dispatch = useDispatch();
   const initialValues = {
     email: "",
     password: "",
@@ -35,6 +36,9 @@ const LoginPage = () => {
       setTimeout(() => {
         navigate("/dashboard");
       }, 2000);
+      // console.log("response",response.data);
+
+      dispatch(setAuthUser(response.data));
 
     } catch (err) {
       console.error("Login error", err);
