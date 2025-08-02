@@ -1,4 +1,3 @@
-import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import InputField from "../components/ui/InputField";
@@ -28,9 +27,8 @@ const LoginPage = () => {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const response = await loginUser(values).unwrap();
-      console.log("Login successful:", response);
-
-      toast.success("Login successful! Redirecting...", {
+      console.log("Login successful", response);
+      toast.success("Login successful", {
         duration: 3000,
       });
 
