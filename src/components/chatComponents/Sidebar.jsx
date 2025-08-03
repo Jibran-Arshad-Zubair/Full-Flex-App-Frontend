@@ -60,13 +60,13 @@ const Sidebar = () => {
 
   return (
     <div className="w-full md:w-80 lg:w-96 bg-white border-r border-gray-200 flex flex-col">
-      <div className="p-4 border-b border-gray-200 flex items-center">
+      <div className="p-4 border-b border-blue-500 flex">
         <button
           onClick={() => navigate("/dashboard")}
           className="flex items-center focus:outline-none group"
           aria-label="Back to dashboard"
         >
-          <FiArrowLeft className="h-5 w-5 text-gray-600 group-hover:text-blue-500 transition-colors mr-2" />
+          <FiArrowLeft className="h-5 w-5 text-gray-600 group-hover:text-blue-500 transition-colors mr-4" />
           <h1 className="group-hover:text-blue-500 transition-colors text-xl font-bold text-gray-800">Dashboard</h1>
         </button>
       </div>
@@ -81,7 +81,7 @@ const Sidebar = () => {
             lastMessage={user.lastMessage}
             time={user.time}
             unread={user.unread}
-            isTyping={user.id === 1} // Abu Abdullah is typing
+            isTyping={user.id === 1} 
           />
         ))}
       </div>

@@ -1,7 +1,5 @@
-
-import Sidebar from "../components/chatComponents/Sidebar";
-
 import ChatArea from "../components/chatComponents/ChatArea";
+import Sidebar from "../components/chatComponents/sidebar";
 
 const ChatPage = () => {
   return (
