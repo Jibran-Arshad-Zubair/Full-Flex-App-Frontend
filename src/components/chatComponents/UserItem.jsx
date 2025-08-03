@@ -1,16 +1,31 @@
-
-const UserItem = ({ name, lastMessage, time, unread, isTyping }) => {
+const UserItem = ({name,lastMessage,time,unread,isTyping,profilePhoto,}) => {
   return (
     <div className="flex items-center p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
       <div className="flex-shrink-0">
-        <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-semibold">
-          {name.charAt(0)}
+        <div className="avatar">
+          <div className="w-12 rounded-full">
+            {profilePhoto ? (
+              <img src={profilePhoto} alt={name} />
+            ) : (
+              <div className="bg-gray-300 flex items-center justify-center w-12 h-12 text-gray-600 font-semibold rounded-full">
+                {name.charAt(0)}
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className="ml-3 flex-1 min-w-0">
         <div className="flex justify-between items-center">
-          <h3 className="text-sm font-semibold text-gray-900 truncate">{name}</h3>
-          <span className={`text-xs ${unread ? 'text-blue-500 font-bold' : 'text-gray-500'}`}>{time}</span>
+          <h3 className="text-sm font-semibold text-gray-900 truncate">
+            {name}
+          </h3>
+          <span
+            className={`text-xs ${
+              unread ? "text-blue-500 font-bold" : "text-gray-500"
+            }`}
+          >
+            {time}
+          </span>
         </div>
         <p className="text-sm text-gray-500 truncate">
           {isTyping ? (
@@ -20,9 +35,7 @@ const UserItem = ({ name, lastMessage, time, unread, isTyping }) => {
           )}
         </p>
       </div>
-      {unread && (
-        <div className="ml-2 w-2 h-2 rounded-full bg-blue-500"></div>
-      )}
+      {unread && <div className="ml-2 w-2 h-2 rounded-full bg-blue-500"></div>}
     </div>
   );
 };

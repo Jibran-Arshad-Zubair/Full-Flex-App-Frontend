@@ -1,4 +1,5 @@
 const ChatHeader = () => {
+  
   return (
     <div className="p-4 border-b border-gray-500 bg-white flex items-center">
       <div className="flex-shrink-0 mr-3">
