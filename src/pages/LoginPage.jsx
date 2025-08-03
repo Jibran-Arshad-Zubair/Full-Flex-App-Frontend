@@ -36,9 +36,10 @@ const LoginPage = () => {
       setTimeout(() => {
         navigate("/dashboard");
       }, 2000);
-      // console.log("response",response.data);
+      console.log("responseeeeeee",response.data);
 
       dispatch(setAuthUser(response.data));
+      localStorage.setItem("authUser", JSON.stringify(response.data.token));
 
     } catch (err) {
       console.error("Login error", err);

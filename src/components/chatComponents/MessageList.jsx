@@ -75,7 +75,7 @@ const MessageList = () => {
           key={message.id} 
           className={`chat ${message.sender === "me" ? "chat-end" : "chat-start"}`}
         >
-          {/* Avatar */}
+         
           <div className="chat-image avatar">
             <div className="w-10 rounded-full">
               <img
@@ -85,18 +85,17 @@ const MessageList = () => {
             </div>
           </div>
           
-          {/* Sender name and time */}
+         
           <div className="chat-header">
             {message.sender === "me" ? "You" : message.name}
             <time className="text-xs opacity-50 ml-2">{message.time}</time>
           </div>
-          
-          {/* Message bubble */}
+       
           <div className={`chat-bubble ${message.sender === "me" ? "chat-bubble-primary" : ""}`}>
             {message.text}
           </div>
           
-          {/* Message status */}
+         
           {/* <div className="chat-footer opacity-50">
             {message.status}
           </div> */}
