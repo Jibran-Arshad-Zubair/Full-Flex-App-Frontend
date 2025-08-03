@@ -1,4 +1,5 @@
-import { FaPaperPlane, FaSmile } from 'react-icons/fa';
+import {  FaSmile } from 'react-icons/fa';
+import { IoSend } from 'react-icons/io5';
 
 const MessageInput = () => {
   return (
@@ -13,7 +14,7 @@ const MessageInput = () => {
           className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
         <button className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-          <FaPaperPlane className="h-5 w-5 " />
+          <IoSend className="h-5 w-5 " />
         </button>
       </div>
     </div>
