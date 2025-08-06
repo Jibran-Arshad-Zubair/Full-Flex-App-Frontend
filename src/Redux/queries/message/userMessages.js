@@ -4,7 +4,16 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 
 export const messagesApi = createApi({
   reducerPath: "messagesApi",
-  baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
+   baseQuery: fetchBaseQuery({
+    baseUrl: API_URL,
+    prepareHeaders: (headers, { getState }) => {
+      const token = getState().user?.authUser?.token || localStorage.getItem("token");
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   tagTypes: ["Message"], 
   endpoints: (builder) => ({
     sendMessage: builder.mutation({
