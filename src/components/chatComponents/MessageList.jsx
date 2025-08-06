@@ -1,6 +1,9 @@
-import React from 'react';
+import { useGetMessageQuery } from "../../Redux/queries/message/userMessages";
 
 const MessageList = () => {
+
+  const { data } = useGetMessageQuery();
+  console.log("datafffffff",data);
 
   const messages = [
     { 
