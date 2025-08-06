@@ -3,19 +3,38 @@ import UserItem from "./UserItem";
 import SearchBar from "./SearchBar";
 import { FiArrowLeft } from "react-icons/fi";
 import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 import { useGetOtherUsersQuery } from "../../Redux/queries/user/authApi";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
-   const { user } = useSelector((state) => state.user?.authUser);
- 
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 2000);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
+
+  const { user } = useSelector((state) => state.user?.authUser);
+
   const { data, isLoading, isError } = useGetOtherUsersQuery(user?._id, {
     skip: !user?._id,
   });
- 
 
   const users = data?.data || [];
+
+  const filteredUsers = users.filter((user) =>
+    (user.fullName || user.userName)
+      .toLowerCase()
+      .includes(debouncedSearchTerm.toLowerCase())
+  );
+
   return (
     <div className="w-full md:w-80 lg:w-96 bg-white border-r border-gray-200 flex flex-col">
       <div className="p-4 border-b border-blue-500 flex">
@@ -31,7 +50,7 @@ const Sidebar = () => {
         </button>
       </div>
 
-      <SearchBar />
+      <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
       <div className="flex-1 overflow-y-auto">
         {isLoading && (
@@ -41,19 +60,21 @@ const Sidebar = () => {
           <p className="p-4 text-sm text-red-500">Failed to load users.</p>
         )}
 
-        {!isLoading && !isError && users.length === 0 && (
-          <p className="p-4 text-sm text-gray-500 text-center">No users found.</p>
+        {!isLoading && !isError && filteredUsers.length === 0 && (
+          <p className="p-4 text-sm text-red-300 text-center">
+            No users found.
+          </p>
         )}
 
         {!isLoading &&
           !isError &&
-          users.map((user) => (
+          filteredUsers.map((user) => (
             <UserItem
               key={user._id}
               name={user.fullName || user.userName}
-              lastMessage={"Start chatting..."} 
-              time={""} //  can pass time if available
-              unread={false} 
+              lastMessage={"Start chatting..."}
+              time={""}
+              unread={false}
               isTyping={false}
               profilePhoto={user.profilePhoto}
             />
