@@ -1,5 +1,6 @@
 import UserDropdown from "./UserDropdown";
 import { HiMenu } from "react-icons/hi";
+import Logo from "../../assets/e-learning-logo.png";
 
 const Navbar = ({ toggleSidebar }) => {
   return (
@@ -14,10 +15,14 @@ const Navbar = ({ toggleSidebar }) => {
               <span className="sr-only">Open sidebar</span>
               <HiMenu className="w-6 h-6" />
             </button>
-            <a href="/dashboard" className="flex ms-2 md:me-24">
-              <span className="self-center text-xl font-bold sm:text-2xl whitespace-nowrap text-indigo-600">
-                E-Learning
-              </span>
+            <a href="/dashboard" className="flex ms-2 md:me-24 items-center">
+              <img
+                src={Logo}
+                alt="E-Learning Logo"
+                className="h-12 w-20 rounded-lg"
+              />
+
+              <span className="sr-only">E-Learning Platform</span>
             </a>
           </div>
           <div className="flex items-center">
