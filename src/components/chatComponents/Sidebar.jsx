@@ -5,9 +5,13 @@ import { FiArrowLeft } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { useGetOtherUsersQuery } from "../../Redux/queries/user/authApi";
+import { useDispatch } from "react-redux";
+import { setSelectedUser } from "../../Redux/reduxSlices/chatSlice";
+
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
@@ -21,13 +25,19 @@ const Sidebar = () => {
     };
   }, [searchTerm]);
 
-  const { user } = useSelector((state) => state.user?.authUser);
+  const authUser = useSelector((state) => state.user.authUser);
+console.log("authUser:", authUser);
 
-  const { data, isLoading, isError } = useGetOtherUsersQuery(user?._id, {
-    skip: !user?._id,
-  });
+const selectedUser = useSelector((state) => state.chat.selectedUser);
+console.log("selectedUser:", selectedUser);
+
+  const { data, isLoading, isError } = useGetOtherUsersQuery(authUser?.user?._id, {
+  skip: !authUser?.user?._id,
+});
 
   const users = data?.data || [];
+
+  console.log("userstttttttttt:", users);
 
   const filteredUsers = users.filter((user) =>
     (user.fullName || user.userName)
@@ -77,6 +87,7 @@ const Sidebar = () => {
               unread={false}
               isTyping={false}
               profilePhoto={user.profilePhoto}
+              onClick={() => dispatch(setSelectedUser(user))}
             />
           ))}
       </div>
