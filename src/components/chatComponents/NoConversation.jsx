@@ -12,8 +12,6 @@ const NoConversationComponent = ({ selectedUser }) => {
           <FiUserPlus className="text-blue-500 text-xl" />
         </div>
       </div>
-
-    
       <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
         No Conversation Yet
       </h2>
@@ -21,8 +19,6 @@ const NoConversationComponent = ({ selectedUser }) => {
         You haven't chatted with {selectedUser?.fullName || 'this user'} before. 
         Send your first message to start the conversation!
       </p>
-
-     
       <div className="relative mb-8 w-24 h-2">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce mx-1"></div>
@@ -30,8 +26,6 @@ const NoConversationComponent = ({ selectedUser }) => {
           <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce mx-1 delay-200"></div>
         </div>
       </div>
-
-      
       <div className="flex flex-col items-center">
         <FiSend className="text-blue-500 text-2xl mb-2" />
         <p className="text-sm text-gray-500">

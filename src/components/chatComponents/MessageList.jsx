@@ -10,18 +10,11 @@ const MessageList = () => {
   const receiverId = selectedUser?._id;
 
   const senderId = authUser?.user?._id;
-  const {
-    data: messageData,
-    isLoading,
-    isError,
-  } = useGetMessageQuery(receiverId, {
-    skip: !receiverId,
-  });
+  const {data: messageData,isLoading,isError,} = useGetMessageQuery(receiverId, {skip: !receiverId});
 
   if (!receiverId) {
     return <NoUserSelectedComponent />;
   }
-
   if (isLoading) {
      return (
       <div className="flex-1 flex items-center justify-center p-4">
@@ -37,17 +30,15 @@ if (isError) {
       </div>
     );
   }
-
   const messages = messageData?.data || [];
-
-  return (
+return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4">
       {messages.length === 0 ? (
         <p className="text-gray-500">No messages yet.</p>
       ) : (
         messages.map((message) => {
           const isMe = message.senderId === senderId;
-          console.log("isMe", isMe);
+         
           return (
             <div
               key={message._id}

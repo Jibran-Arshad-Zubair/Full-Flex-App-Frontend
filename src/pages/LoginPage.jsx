@@ -28,16 +28,12 @@ const LoginPage = () => {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const response = await loginUser(values).unwrap();
-      // console.log("Login successful", response);
       toast.success("Login successful", {
         duration: 3000,
       });
-
       setTimeout(() => {
         navigate("/dashboard");
       }, 2000);
-      // console.log("responseeeeeee",response.data);
-
       dispatch(setAuthUser(response.data));
       localStorage.setItem("authUser", JSON.stringify(response.data.token));
 
