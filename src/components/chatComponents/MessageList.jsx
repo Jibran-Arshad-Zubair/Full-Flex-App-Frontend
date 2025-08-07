@@ -1,5 +1,7 @@
 import { useGetMessageQuery } from "../../Redux/queries/message/userMessages";
 import { useSelector } from "react-redux";
+import NoConversationComponent from "./NoConversation";
+import NoUserSelectedComponent from "./NoUserSelected";
 
 const MessageList = () => {
    const authUser = useSelector((state) => state.user.authUser);
@@ -22,15 +24,23 @@ const MessageList = () => {
   console.log("messageData", messageData);
 
   if (!receiverId) {
-    return <p className="p-4 text-gray-500">Please select a user to start chat.</p>;
+    return <NoUserSelectedComponent />;
   }
 
   if (isLoading) {
-    return <p className="p-4 text-gray-500">Loading messages...</p>;
+     return (
+      <div className="flex-1 flex items-center justify-center p-4">
+        <p className="text-gray-500">Loading messages...</p>
+      </div>
+    );
   }
 
-  if (isError) {
-    return <p className="p-4 text-red-500">Failed to load messages.</p>;
+if (isError) {
+    return (
+      <div className="flex-1 flex items-center justify-center p-4">
+        <NoConversationComponent selectedUser={selectedUser} />
+      </div>
+    );
   }
 
   const messages = messageData?.data || [];
