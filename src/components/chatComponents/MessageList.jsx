@@ -52,7 +52,7 @@ const MessageList = () => {
                 <div className="w-10 rounded-full">
                   <img
                     alt="User avatar"
-                    src={isMe ? authUser?.profilePic : selectedUser?.profilePic}
+                    src={isMe ? authUser?.user?.profilePhoto : selectedUser?.profilePhoto}
                   />
                 </div>
               </div>
