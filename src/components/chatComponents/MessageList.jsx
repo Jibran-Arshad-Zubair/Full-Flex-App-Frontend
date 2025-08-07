@@ -2,17 +2,14 @@ import { useGetMessageQuery } from "../../Redux/queries/message/userMessages";
 import { useSelector } from "react-redux";
 import NoConversationComponent from "./NoConversation";
 import NoUserSelectedComponent from "./NoUserSelected";
+import ChatLoader from "./ChatLoader";
 
 const MessageList = () => {
    const authUser = useSelector((state) => state.user.authUser);
   const selectedUser = useSelector((state) => state.chat.selectedUser);
- 
-
   const receiverId = selectedUser?._id;
-  console.log("receiverId", receiverId);
-  const senderId = authUser?.user?._id;
- 
 
+  const senderId = authUser?.user?._id;
   const {
     data: messageData,
     isLoading,
@@ -21,8 +18,6 @@ const MessageList = () => {
     skip: !receiverId,
   });
 
-  console.log("messageData", messageData);
-
   if (!receiverId) {
     return <NoUserSelectedComponent />;
   }
@@ -30,7 +25,7 @@ const MessageList = () => {
   if (isLoading) {
      return (
       <div className="flex-1 flex items-center justify-center p-4">
-        <p className="text-gray-500">Loading messages...</p>
+        <ChatLoader />
       </div>
     );
   }
