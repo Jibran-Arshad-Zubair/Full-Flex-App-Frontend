@@ -58,7 +58,7 @@ const Sidebar = () => {
 
         {!isLoading && !isError && filteredUsers.length === 0 && (
           <p className="p-4 text-sm text-red-300 text-center">
-            No users found.
+            No user found.
           </p>
         )}
 
