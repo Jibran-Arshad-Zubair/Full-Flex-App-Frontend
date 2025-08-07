@@ -1,6 +1,9 @@
-const UserItem = ({name,lastMessage,time,unread,isTyping,profilePhoto,}) => {
+const UserItem = ({name,lastMessage,time,unread,isTyping,profilePhoto,onClick}) => {
   return (
-    <div className="flex items-center p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
+     <div
+      onClick={onClick} 
+      className="flex items-center p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
+    >
       <div className="flex-shrink-0">
         <div className="avatar">
           <div className="w-12 rounded-full">
