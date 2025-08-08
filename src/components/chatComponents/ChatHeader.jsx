@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import defaultProfile from '../../assets/defaultProfile.png';
 
 const ChatHeader = () => {
   const selectedUser = useSelector((state) => state.chat.selectedUser);
@@ -16,7 +17,14 @@ const ChatHeader = () => {
       <div className="flex-shrink-0 mr-3">
         <div className="avatar">
           <div className="w-10 rounded-full">
-            <img src={selectedUser.profilePhoto} alt="User Avatar" />
+            <img
+              src={selectedUser.profilePhoto || defaultProfile}
+              alt={selectedUser.fullName}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = defaultProfile;
+              }}
+            />
           </div>
         </div>
       </div>

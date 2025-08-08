@@ -3,27 +3,34 @@ import { useSelector } from "react-redux";
 import NoConversationComponent from "./NoConversation";
 import NoUserSelectedComponent from "./NoUserSelected";
 import ChatLoader from "./ChatLoader";
+import defaultProfile from "../../assets/defaultProfile.png";
+import defaultLoginProfile from "../../assets/loginUserProfile.png";
+
 
 const MessageList = () => {
-   const authUser = useSelector((state) => state.user.authUser);
+  const authUser = useSelector((state) => state.user.authUser);
   const selectedUser = useSelector((state) => state.chat.selectedUser);
   const receiverId = selectedUser?._id;
 
   const senderId = authUser?.user?._id;
-  const {data: messageData,isLoading,isError,} = useGetMessageQuery(receiverId, {skip: !receiverId});
+  const {
+    data: messageData,
+    isLoading,
+    isError,
+  } = useGetMessageQuery(receiverId, { skip: !receiverId });
 
   if (!receiverId) {
     return <NoUserSelectedComponent />;
   }
   if (isLoading) {
-     return (
+    return (
       <div className="flex-1 flex items-center justify-center p-4">
         <ChatLoader />
       </div>
     );
   }
 
-if (isError) {
+  if (isError) {
     return (
       <div className="flex-1 flex items-center justify-center p-4">
         <NoConversationComponent selectedUser={selectedUser} />
@@ -31,14 +38,14 @@ if (isError) {
     );
   }
   const messages = messageData?.data || [];
-return (
+  return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4">
       {messages.length === 0 ? (
         <p className="text-gray-500">No messages yet.</p>
       ) : (
         messages.map((message) => {
           const isMe = message.senderId === senderId;
-         
+
           return (
             <div
               key={message._id}
@@ -46,10 +53,24 @@ return (
             >
               <div className="chat-image avatar">
                 <div className="w-10 rounded-full">
-                  <img
-                    alt="User avatar"
-                    src={isMe ? authUser?.user?.profilePhoto : selectedUser?.profilePhoto}
-                  />
+                  {isMe ? (
+                    <img alt="User avatar" 
+                    src={authUser?.user?.profilePhoto || defaultLoginProfile}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = defaultLoginProfile;
+                    }}
+                    />
+                  ) : (
+                    <img
+                      alt="User avatar"
+                      src={selectedUser?.profilePhoto || defaultProfile}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = defaultProfile;
+                      }}
+                    />
+                  )}
                 </div>
               </div>
 
@@ -60,7 +81,9 @@ return (
                 </time>
               </div>
 
-              <div className={`chat-bubble ${isMe ? "chat-bubble-primary" : ""}`}>
+              <div
+                className={`chat-bubble ${isMe ? "chat-bubble-primary" : ""}`}
+              >
                 {message.message}
               </div>
             </div>

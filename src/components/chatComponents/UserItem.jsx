@@ -1,14 +1,31 @@
-const UserItem = ({name,lastMessage,time,unread,isTyping,profilePhoto,onClick}) => {
+import defaultProfile from "../../assets/defaultProfile.png";
+
+const UserItem = ({
+  name,
+  lastMessage,
+  time,
+  unread,
+  isTyping,
+  profilePhoto,
+  onClick,
+}) => {
   return (
-     <div
-      onClick={onClick} 
+    <div
+      onClick={onClick}
       className="flex items-center p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
     >
       <div className="flex-shrink-0">
         <div className="avatar">
           <div className="w-12 rounded-full">
             {profilePhoto ? (
-              <img src={profilePhoto} alt={name} />
+              <img
+                src={profilePhoto}
+                alt={name}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = defaultProfile;
+                }}
+              />
             ) : (
               <div className="bg-gray-300 flex items-center justify-center w-12 h-12 text-gray-600 font-semibold rounded-full">
                 {name.charAt(0)}
