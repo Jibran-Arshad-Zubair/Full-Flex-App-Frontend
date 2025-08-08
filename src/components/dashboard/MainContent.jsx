@@ -49,12 +49,9 @@ const MainContent = () => {
           ))}
         </div>
 
-      
         <div className="mb-8">
           <DashboardChart />
         </div>
-
-        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="h-full">
             <RecentActivities />
