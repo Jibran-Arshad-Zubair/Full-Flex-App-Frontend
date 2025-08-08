@@ -19,7 +19,7 @@ const Navbar = ({ toggleSidebar }) => {
               <img
                 src={Logo}
                 alt="E-Learning Logo"
-                className="h-12 w-20 rounded-lg"
+                className="h-12 w-12 object-contain rounded-lg"
               />
 
               <span className="sr-only">E-Learning Platform</span>

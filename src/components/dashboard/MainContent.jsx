@@ -34,9 +34,9 @@ const MainContent = () => {
 
   return (
     <div className="p-4 sm:ml-64">
-      {/* Main container with improved spacing */}
+  
       <div className="p-6 border-2 border-gray-200 border-dashed rounded-2xl mt-14 bg-gray-50/50">
-        {/* Stats cards grid with responsive gap */}
+      
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {stats.map((stat, index) => (
             <StatsCard
@@ -49,12 +49,12 @@ const MainContent = () => {
           ))}
         </div>
 
-        {/* Main chart with proper spacing */}
+      
         <div className="mb-8">
           <DashboardChart />
         </div>
 
-        {/* Bottom section with perfect alignment */}
+        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="h-full">
             <RecentActivities />
