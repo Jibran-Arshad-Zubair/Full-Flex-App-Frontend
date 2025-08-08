@@ -93,19 +93,6 @@ const Sidebar = ({ isOpen }) => {
             );
           })}
         </nav>
-
-      
-        <div className="mt-8 p-4 bg-gradient-to-br from-slate-50 to-purple-50 rounded-2xl border border-slate-200/50">
-          <div className="text-center">
-            <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-              </svg>
-            </div>
-            <p className="text-xs text-slate-600 font-medium">Boost your learning</p>
-            <p className="text-xs text-slate-500 mt-1">Upgrade to Pro</p>
-          </div>
-        </div>
       </div>
     </aside>
   );
