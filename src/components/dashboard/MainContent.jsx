@@ -1,5 +1,8 @@
+import DashboardChart from './DashboardGraph';
+import NotificationsPanel from './Notifications';
+import RecentActivities from './RecentActivities';
 import StatsCard from './StatsCard';
-import {FaMoneyBillWave,FaUsers,FaEnvelopeOpenText,FaShoppingCart,} from 'react-icons/fa';
+import { FaMoneyBillWave, FaUsers, FaEnvelopeOpenText, FaShoppingCart } from 'react-icons/fa';
 
 const MainContent = () => {
   const stats = [
@@ -31,8 +34,10 @@ const MainContent = () => {
 
   return (
     <div className="p-4 sm:ml-64">
-      <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg mt-14">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+      {/* Main container with improved spacing */}
+      <div className="p-6 border-2 border-gray-200 border-dashed rounded-2xl mt-14 bg-gray-50/50">
+        {/* Stats cards grid with responsive gap */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {stats.map((stat, index) => (
             <StatsCard
               key={index}
@@ -44,16 +49,18 @@ const MainContent = () => {
           ))}
         </div>
 
-        <div className="flex items-center justify-center h-48 mb-4 rounded bg-white border border-gray-200">
-          <p className="text-2xl text-gray-400">📈 Main Chart Area</p>
+        {/* Main chart with proper spacing */}
+        <div className="mb-8">
+          <DashboardChart />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div className="flex items-center justify-center rounded bg-white border border-gray-200 h-48">
-            <p className="text-2xl text-gray-400">🕒 Recent Activities</p>
+        {/* Bottom section with perfect alignment */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="h-full">
+            <RecentActivities />
           </div>
-          <div className="flex items-center justify-center rounded bg-white border border-gray-200 h-48">
-            <p className="text-2xl text-gray-400">🔔 Notifications</p>
+          <div className="h-full">
+            <NotificationsPanel />
           </div>
         </div>
       </div>

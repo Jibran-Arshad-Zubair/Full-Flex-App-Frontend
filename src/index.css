@@ -24,3 +24,8 @@
 .animate-bounce-horizontal {
   animation: bounce-horizontal 1.5s infinite;
 }
+
+.dashboard-transition {
+  transition: all 0.3s ease-in-out;
+}
+
