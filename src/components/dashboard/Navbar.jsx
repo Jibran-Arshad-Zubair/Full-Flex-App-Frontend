@@ -49,11 +49,11 @@ const Navbar = ({ toggleSidebar }) => {
           </div>
           
           <div className="flex items-center space-x-4">
-            <button className="p-2 rounded-full text-gray-600 hover:bg-indigo-50 relative">
+            <button className="p-2 rounded-full text-gray-600 hover:bg-indigo-50 relative border border-blue-400">
               <IoMdNotificationsOutline className="w-6 h-6" />
               <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
             </button>
-            <UserDropdown />
+            <UserDropdown   className="flex items-center space-x-2 border border-blue-200 "/>
           </div>
         </div>
       </div>
