@@ -1,12 +1,14 @@
 import { useGetMessageQuery } from "../../Redux/queries/message/userMessages";
-import { useSelector } from "react-redux";
+import { useSelector , useDispatch} from "react-redux";
 import NoConversationComponent from "./NoConversation";
 import NoUserSelectedComponent from "./NoUserSelected";
 import ChatLoader from "./ChatLoader";
 import defaultProfile from "../../assets/defaultProfile.png";
 import defaultLoginProfile from "../../assets/loginUserProfile.png";
 import { useEffect, useRef } from "react";
+import { setSelectedUser } from "../../Redux/reduxSlices/chatSlice";
 const MessageList = () => {
+  const dispatch = useDispatch();
   const authUser = useSelector((state) => state.user.authUser);
   const selectedUser = useSelector((state) => state.chat.selectedUser);
   const receiverId = selectedUser?._id;
@@ -21,6 +23,10 @@ const MessageList = () => {
    const messagesEndRef = useRef(null); 
 
   const messages = messageData?.data || [];
+
+ useEffect(() => {
+    return () => dispatch(setSelectedUser(null));
+  }, []);
 
 
   useEffect(() => {
