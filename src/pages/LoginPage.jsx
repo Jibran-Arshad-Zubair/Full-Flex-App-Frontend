@@ -2,17 +2,19 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import InputField from "../components/ui/InputField";
 import Button from "../components/ui/Button";
-
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useLoginUserMutation } from "../Redux/queries/user/authApi";
 import { useDispatch } from "react-redux";
 import { setAuthUser } from "../Redux/reduxSlices/userSlice";
+import { FaUserCircle, FaEnvelope, FaLock, FaSpinner } from "react-icons/fa";
+import Logo from "../assets/e-learning-logo.png";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [loginUser] = useLoginUserMutation();
   const dispatch = useDispatch();
+
   const initialValues = {
     email: "",
     password: "",
@@ -28,22 +30,16 @@ const LoginPage = () => {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const response = await loginUser(values).unwrap();
-      toast.success("Login successful", {
-        duration: 3000,
-      });
+      toast.success("Login successful", { duration: 3000 });
       setTimeout(() => {
         navigate("/dashboard");
       }, 2000);
       dispatch(setAuthUser(response.data));
       localStorage.setItem("authUser", JSON.stringify(response.data.token));
-
     } catch (err) {
       console.error("Login error", err);
       const errorMessage = err.data?.message || "Login failed";
-
-      toast.error(errorMessage, {
-        duration: 3000,
-      });
+      toast.error(errorMessage, { duration: 3000 });
     } finally {
       setSubmitting(false);
     }
@@ -62,22 +58,13 @@ const LoginPage = () => {
                 <p className="text-indigo-100">
                   Continue your journey with us.
                 </p>
-                <div className="mt-8">
+                 <div className="mt-4">
                   <div className="w-24 h-24 mx-auto bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-12 w-12 text-white"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
+                    <img
+                      src={Logo}
+                      alt="Logo"
+                      className="h-12 w-12 object-contain rounded-md"
+                    />
                   </div>
                 </div>
               </div>
@@ -86,25 +73,13 @@ const LoginPage = () => {
           <div className="p-8 w-full md:w-1/2">
             <div className="flex justify-center mb-6 md:hidden">
               <div className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8 text-blue-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
+                <FaUserCircle className="h-8 w-8 text-blue-400" />
               </div>
             </div>
             <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
               Login to Your Account
             </h1>
+
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
@@ -117,17 +92,7 @@ const LoginPage = () => {
                     name="email"
                     type="email"
                     placeholder="your@email.com"
-                    icon={
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-gray-400"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                      </svg>
-                    }
+                    icon={<FaEnvelope className="h-5 w-5 text-gray-400" />}
                   />
 
                   <InputField
@@ -135,20 +100,7 @@ const LoginPage = () => {
                     name="password"
                     type="password"
                     placeholder="••••••••"
-                    icon={
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-gray-400"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    }
+                    icon={<FaLock className="h-5 w-5 text-gray-400" />}
                   />
 
                   <div className="flex items-center justify-between">
@@ -169,26 +121,7 @@ const LoginPage = () => {
                   >
                     {isSubmitting ? (
                       <>
-                        <svg
-                          className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
-                        </svg>
+                        <FaSpinner className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
                         Signing in...
                       </>
                     ) : (
@@ -198,7 +131,6 @@ const LoginPage = () => {
                 </Form>
               )}
             </Formik>
-
             <div className="mt-6">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
