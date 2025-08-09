@@ -5,8 +5,7 @@ import NoUserSelectedComponent from "./NoUserSelected";
 import ChatLoader from "./ChatLoader";
 import defaultProfile from "../../assets/defaultProfile.png";
 import defaultLoginProfile from "../../assets/loginUserProfile.png";
-
-
+import { useEffect, useRef } from "react";
 const MessageList = () => {
   const authUser = useSelector((state) => state.user.authUser);
   const selectedUser = useSelector((state) => state.chat.selectedUser);
@@ -18,6 +17,17 @@ const MessageList = () => {
     isLoading,
     isError,
   } = useGetMessageQuery(receiverId, { skip: !receiverId });
+
+   const messagesEndRef = useRef(null); 
+
+  const messages = messageData?.data || [];
+
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   if (!receiverId) {
     return <NoUserSelectedComponent />;
@@ -37,8 +47,8 @@ const MessageList = () => {
       </div>
     );
   }
-  const messages = messageData?.data || [];
   return (
+    <>
     <div className="flex-1 overflow-y-auto p-4 space-y-4">
       {messages.length === 0 ? (
         <p className="text-gray-500">No messages yet.</p>
@@ -90,7 +100,9 @@ const MessageList = () => {
           );
         })
       )}
+     <div ref={messagesEndRef} />
     </div>
+    </>
   );
 };
 
