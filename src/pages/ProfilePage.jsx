@@ -54,7 +54,7 @@ const ProfilePage = () => {
       <div className={`p-4 mt-10 sm:ml-64 transition-all duration-200 ${sidebarOpen ? 'ml-64' : ''}`}>
         <div className="p-6 border-2 border-gray-200 border-dashed rounded-2xl mt-14 bg-white">
         
-          <div className="mb-8">
+          <div className="flex flex-col items-center mb-8">
             <h1 className="text-2xl font-bold text-gray-800">Profile Settings</h1>
             <p className="text-gray-600">Manage your personal information</p>
           </div>
@@ -143,6 +143,7 @@ const ProfilePage = () => {
                         options={[
                           { value: 'male', label: 'Male' },
                           { value: 'female', label: 'Female' },
+                          { value: 'other', label: 'Other' },
                         ]}
                         icon={<FiUser className="text-gray-400" />}
                         disabled={!isEditing}
