@@ -50,14 +50,14 @@ const Sidebar = () => {
 
       <div className="flex-1 overflow-y-auto">
         {isLoading && (
-          <p className="p-4 text-sm text-gray-500">Loading users...</p>
+          <p className="p-4 text-sm  text-gray-500 text-center">Loading users...</p>
         )}
         {isError && (
-          <p className="p-4 text-sm text-red-500">Failed to load users.</p>
+          <p className="p-4 text-sm text-red-500 text-center">Failed to load users.</p>
         )}
 
         {!isLoading && !isError && filteredUsers.length === 0 && (
-          <p className="p-4 text-sm text-red-300 text-center">
+          <p className="p-4 text-sm text-gray-600 text-center">
             No user found.
           </p>
         )}

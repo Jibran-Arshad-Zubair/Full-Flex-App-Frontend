@@ -14,21 +14,15 @@ const MessageList = () => {
   const receiverId = selectedUser?._id;
 
   const senderId = authUser?.user?._id;
-  const {
-    data: messageData,
-    isLoading,
-    isError,
-  } = useGetMessageQuery(receiverId, { skip: !receiverId });
+  const {data: messageData,isLoading,isError} = useGetMessageQuery(receiverId, { skip: !receiverId });
 
-   const messagesEndRef = useRef(null); 
-
+  const messagesEndRef = useRef(null); 
   const messages = messageData?.data || [];
 
  useEffect(() => {
     return () => dispatch(setSelectedUser(null));
   }, []);
-
-
+  
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
