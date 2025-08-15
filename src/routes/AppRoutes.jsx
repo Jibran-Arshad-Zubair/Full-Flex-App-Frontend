@@ -6,6 +6,7 @@ import DashboardPage from '../pages/DashboardPage';
 import CheckoutPage from '../pages/CheckoutPage';
 import ChatPage from '../pages/ChatPage';
 import ProfilePage from '../pages/ProfilePage';
+import ComingSoonPage from '../components/dashboard/ComingSoonPage';
 
 export default function AppRoutes() {
   return (
@@ -16,6 +17,8 @@ export default function AppRoutes() {
       <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/chat" element={<ChatPage />} />
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/users" element={<ComingSoonPage />} />
+      <Route path="/payments" element={<ComingSoonPage />} />
     </Routes>
   );
 }

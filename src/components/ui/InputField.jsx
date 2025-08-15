@@ -1,7 +1,7 @@
 import React from 'react';
 import { ErrorMessage, Field } from 'formik';
 
-const InputField = ({ label, name, type, placeholder, icon }) => {
+const InputField = ({ label, name, type, placeholder, icon ,  }) => {
   return (
     <div className="mb-4">
       <label htmlFor={name} className="block text-sm font-medium text-gray-700">
