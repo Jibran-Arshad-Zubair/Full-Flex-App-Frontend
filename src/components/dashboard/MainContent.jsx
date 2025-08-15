@@ -51,9 +51,7 @@ const MainContent = () => {
           ))}
         </div>
 
-        <div className="mb-8">
-          <DashboardChart />
-        </div>
+       
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="h-full">
             <RecentActivities />
@@ -61,6 +59,9 @@ const MainContent = () => {
           <div className="h-full">
             <NotificationsPanel />
           </div>
+        </div>
+         <div className="mb-4 mt-8">
+          <DashboardChart />
         </div>
       </div>
     </div>

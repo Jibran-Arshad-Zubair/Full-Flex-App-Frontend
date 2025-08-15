@@ -17,7 +17,7 @@ export default function AppRoutes() {
       <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/chat" element={<ChatPage />} />
       <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/users" element={<ComingSoonPage />} />
+      <Route path="/course" element={<ComingSoonPage />} />
       <Route path="/payments" element={<ComingSoonPage />} />
     </Routes>
   );

@@ -1,6 +1,7 @@
 import React from 'react'; 
 import { Link, useLocation } from 'react-router-dom';
 import { HiOutlineViewGrid, HiOutlineChatAlt2, HiOutlineUserGroup, HiOutlineCreditCard } from 'react-icons/hi';
+import { FaBookOpen } from 'react-icons/fa';
 
 const Sidebar = ({ isOpen }) => {
   const location = useLocation();
@@ -10,26 +11,26 @@ const Sidebar = ({ isOpen }) => {
       name: 'Dashboard',
       icon: <HiOutlineViewGrid className="w-5 h-5" />,
       path: '/dashboard',
-      gradient: 'from-blue-500 to-purple-600'
+      gradient: 'from-blue-400 to-blue-500'
     },
     {
       name: 'Chat',
       icon: <HiOutlineChatAlt2 className="w-5 h-5" />,
       path: '/chat',
       badge: 3,
-      gradient: 'from-green-500 to-emerald-600'
+      gradient: 'from-blue-400 to-blue-500'
     },
     {
-      name: 'Users',
-      icon: <HiOutlineUserGroup className="w-5 h-5" />,
-      path: '/users',
-      gradient: 'from-orange-500 to-red-600'
+      name: 'Courses',
+      icon: <FaBookOpen className="w-5 h-5" />,
+      path: '/course',
+      gradient: 'from-blue-400 to-blue-500'
     },
     {
       name: 'Payments',
       icon: <HiOutlineCreditCard className="w-5 h-5" />,
       path: '/payments',
-      gradient: 'from-pink-500 to-rose-600'
+      gradient: 'from-blue-400 to-blue-500'
     },
   ];
 
