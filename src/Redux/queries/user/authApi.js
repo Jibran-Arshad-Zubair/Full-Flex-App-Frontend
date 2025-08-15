@@ -41,6 +41,14 @@ export const authApi = createApi({
       }),
       providesTags: ["User"],
     }),
+      updateUser: builder.mutation({
+      query: (userData) => ({
+        url: `/users/update/${userData._id}`,
+        method: "PUT",
+        body: userData,
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -48,4 +56,5 @@ export const {
   useRegisterUserMutation,
   useLoginUserMutation,
   useGetOtherUsersQuery,
+  useUpdateUserMutation,
 } = authApi;
