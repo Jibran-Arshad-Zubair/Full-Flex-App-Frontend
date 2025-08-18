@@ -5,6 +5,7 @@ import AppRoutes from './routes/AppRoutes';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
+import ReactLenis from 'react-lenis';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -23,12 +24,27 @@ export default function App() {
    },[authUser]);
 
   return (
-   <BrowserRouter>
+    <ReactLenis
+    root
+    options={{
+      lerp: 0.1,
+      duration:1.2,
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      smoothTouch: false,
+      touchMultiplier: 2,
+      
+    }}>
+      <BrowserRouter>
       <Elements stripe={stripePromise}>
         <div className="min-h-screen bg-gray-100">
           <AppRoutes />
         </div>
       </Elements>
     </BrowserRouter>
+    </ReactLenis>
+   
   );
 }
