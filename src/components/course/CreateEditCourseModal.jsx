@@ -16,7 +16,7 @@ const CreateCourseModal = ({ isOpen, onClose, onSubmit }) => {
     price: "",
     thumbnail: null,
     category: "",
-    videos: [{ title: "", url: "", duration: "" }],
+    videos: [{ title: "", url: "",}],
   };
 
   const validationSchema = Yup.object().shape({

@@ -8,6 +8,7 @@ const middlewares = [authApi.middleware, paymentApi.middleware , messagesApi.mid
 
 import {persistStore,persistReducer,FLUSH,REHYDRATE,PAUSE,PERSIST,PURGE,REGISTER,} from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
+import { courseApi } from "./Redux/queries/course/courseApi";
 
 const persistConfig = {
   key: 'root',
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
     [paymentApi.reducerPath]: paymentApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [messagesApi.reducerPath]: messagesApi.reducer,
+    [courseApi.reducerPath]: courseApi.reducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

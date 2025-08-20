@@ -6,63 +6,44 @@ import CoursesTable from "../components/course/CourseTable";
 import { FiBookOpen } from "react-icons/fi";
 import CreateCourseModal from "../components/course/CreateEditCourseModal";
 import Button from "../components/ui/Button";
+import { useCreateCourseMutation } from "../Redux/queries/course/courseApi";
+import toast from "react-hot-toast";
 
 const CoursesPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [createCourse] = useCreateCourseMutation();
+  const [courses, setCourses] = useState("");
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-  const [courses, setCourses] = useState([
-    {
-      id: 1,
-      title: "Advanced React with Hooks",
-
-      category: "Web Development",
-      price: 2999,
-      students: 45,
-      createdAt: "2025-08-10",
-    },
-    {
-      id: 2,
-      title: "Node.js Fundamentals",
-
-      category: "Backend",
-      price: 2499,
-      students: 32,
-      createdAt: "2025-07-15",
-    },
-    {
-      id: 3,
-      title: "UI/UX Design Principles",
-
-      category: "Design",
-      price: 1999,
-      students: 28,
-      createdAt: "2025-08-05",
-    },
-    {
-      id: 4,
-      title: "Python for Data Science",
-
-      category: "Data Science",
-      price: 3499,
-      students: 56,
-      createdAt: "2025-07-22",
-    },
-  ]);
-
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      // Handle form submission (upload thumbnail, create course, etc.)
-      console.log("Form values:", values);
-      // Add your API call here
+      const formData = new FormData();
+      formData.append("title", values.title);
+      formData.append("description", values.description);
+      formData.append("price", values.price);
+      formData.append("category", values.category);
+      formData.append("thumbnail", values.thumbnail);
+
+      values.videos.forEach((video, index) => {
+        formData.append(`videos[${index}][title]`, video.title);
+        formData.append(`videos[${index}][url]`, video.url);
+        
+      });
+
+      const res = await createCourse(formData).unwrap();
+      toast.success("Course created successfully");
+      setCourses((prev) => [...prev, res?.course]);
+      resetForm();
       setIsModalOpen(false);
     } catch (error) {
       console.error("Error creating course:", error);
+      toast.error("Failed to create course");
     } finally {
       setSubmitting(false);
+      // setIsModalOpen(false);
     }
   };
 
@@ -90,7 +71,7 @@ const CoursesPage = () => {
         }`}
       >
         <div className="p-4 md:p-8 max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between mt-8 items-start md:items-center mb-8 gap-4">
+          <div className="flex flex-col md:flex-row justify-between mt-8 border-b border-gray-300 dark:border-gray-700 pb-8 items-start md:items-center  gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
                 Course Management
