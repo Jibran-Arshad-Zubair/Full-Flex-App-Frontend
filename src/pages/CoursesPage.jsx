@@ -13,37 +13,38 @@ const CoursesPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [createCourse] = useCreateCourseMutation();
-  const [courses, setCourses] = useState("");
+  const [courses, setCourses] = useState([]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+  const handleSubmit = async (values, { setSubmitting  }) => {
     try {
       const formData = new FormData();
       formData.append("title", values.title);
       formData.append("description", values.description);
       formData.append("price", values.price);
-      formData.append("category", values.category);
+      if (values.category) {
+        formData.append("category", values.category);
+      }
+
       formData.append("thumbnail", values.thumbnail);
 
       values.videos.forEach((video, index) => {
         formData.append(`videos[${index}][title]`, video.title);
         formData.append(`videos[${index}][url]`, video.url);
-        
       });
 
       const res = await createCourse(formData).unwrap();
-      toast.success("Course created successfully");
       setCourses((prev) => [...prev, res?.course]);
-      resetForm();
-      setIsModalOpen(false);
+      toast.success("Course created successfully");
     } catch (error) {
       console.error("Error creating course:", error);
       toast.error("Failed to create course");
     } finally {
       setSubmitting(false);
-      // setIsModalOpen(false);
+   
+      
     }
   };
 

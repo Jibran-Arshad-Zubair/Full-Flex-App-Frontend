@@ -26,6 +26,7 @@ const CreateCourseModal = ({ isOpen, onClose, onSubmit }) => {
       .required("Price is required")
       .min(0, "Price must be positive"),
       thumbnail: Yup.mixed().required("Thumbnail is required"),
+      category: Yup.string().required("Category is required"),
   });
 
   const categories = [
