@@ -8,6 +8,7 @@ import ChatPage from '../pages/ChatPage';
 import ProfilePage from '../pages/ProfilePage';
 import ComingSoonPage from '../components/dashboard/ComingSoonPage';
 import CoursesPage from '../pages/CoursesPage';
+import CourseDetailsPage from '../pages/CourseDetailsPage';
 
 export default function AppRoutes() {
   return (
@@ -20,6 +21,8 @@ export default function AppRoutes() {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/course" element={< CoursesPage/>} />
       <Route path="/payments" element={<ComingSoonPage />} />
+      <Route path="/course-details/:courseId" element={<CourseDetailsPage/>} />
+
       
     </Routes>
   );

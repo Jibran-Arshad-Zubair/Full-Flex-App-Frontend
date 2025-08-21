@@ -5,6 +5,7 @@ import CoursesTable from "../components/course/CourseTable";
 import { FiBookOpen } from "react-icons/fi";
 import CreateCourseModal from "../components/course/CreateEditCourseModal";
 import Button from "../components/ui/Button";
+import { useNavigate } from "react-router-dom";
 import {
   useCreateCourseMutation,
   useGetAllCoursesQuery,
@@ -16,6 +17,7 @@ const CoursesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [courses, setCourses] = useState([]);
   const [createCourse] = useCreateCourseMutation();
+  const navigate = useNavigate();
 
   const { data: allCourses, error, isLoading } = useGetAllCoursesQuery();
   useEffect(() => {
@@ -56,7 +58,8 @@ const CoursesPage = () => {
   };
 
   const handleView = (courseId) => {
-    console.log("View course:", courseId);
+    navigate(`/course-details/${courseId}`);
+   
   };
 
   const handleEdit = (courseId) => {
