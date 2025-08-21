@@ -1,24 +1,33 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/dashboard/Navbar";
 import Sidebar from "../components/dashboard/Sidebar";
 import CoursesTable from "../components/course/CourseTable";
 import { FiBookOpen } from "react-icons/fi";
 import CreateCourseModal from "../components/course/CreateEditCourseModal";
 import Button from "../components/ui/Button";
-import { useCreateCourseMutation } from "../Redux/queries/course/courseApi";
+import {
+  useCreateCourseMutation,
+  useGetAllCoursesQuery,
+} from "../Redux/queries/course/courseApi";
 import toast from "react-hot-toast";
 
 const CoursesPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [createCourse] = useCreateCourseMutation();
   const [courses, setCourses] = useState([]);
+  const [createCourse] = useCreateCourseMutation();
+
+  const { data: allCourses, error, isLoading } = useGetAllCoursesQuery();
+  useEffect(() => {
+    if (allCourses?.data) {
+      setCourses(allCourses.data);
+    }
+  }, [allCourses]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-  const handleSubmit = async (values, { setSubmitting  }) => {
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const formData = new FormData();
       formData.append("title", values.title);
@@ -43,8 +52,6 @@ const CoursesPage = () => {
       toast.error("Failed to create course");
     } finally {
       setSubmitting(false);
-   
-      
     }
   };
 
@@ -72,19 +79,33 @@ const CoursesPage = () => {
         }`}
       >
         <div className="p-4 md:p-8 max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between mt-8 border-b border-gray-300 dark:border-gray-700 pb-8 items-start md:items-center  gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-8 border-b border-gray-300 dark:border-gray-700 pb-6">
+            <div className="text-center md:text-left">
+              <h1 className="text-2xl sm:text-2xl lg:text-3xl font-bold text-gray-800 dark:text-white">
                 Course Management
               </h1>
-              <p className="text-gray-600 dark:text-gray-300 mt-2">
+              <p className="mt-2 text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto md:mx-0">
                 Manage all your courses in one place.
               </p>
             </div>
-            <Button onClick={() => setIsModalOpen(true)}>Create Course</Button>
+
+            <div className="flex justify-center md:justify-end">
+              <Button
+                onClick={() => setIsModalOpen(true)}
+                className="px-5 py-2.5 text-sm sm:text-base rounded-lg shadow-md bg-blue-600 hover:bg-blue-700 text-white transition-all"
+              >
+                Create Course
+              </Button>
+            </div>
           </div>
 
-          {courses.length > 0 ? (
+          {isLoading ? (
+            <p className="text-center mt-6">Loading courses...</p>
+          ) : error ? (
+            <p className="text-center mt-6 text-red-500">
+              Failed to load courses
+            </p>
+          ) : courses.length > 0 ? (
             <CoursesTable
               courses={courses}
               onView={handleView}
