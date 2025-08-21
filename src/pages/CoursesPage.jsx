@@ -45,7 +45,7 @@ const CoursesPage = () => {
       });
 
       const res = await createCourse(formData).unwrap();
-      setCourses((prev) => [...prev, res?.course]);
+      setCourses((prev) => [...prev, res?.course || res?.data?.course]);
       toast.success("Course created successfully");
     } catch (error) {
       console.error("Error creating course:", error);
@@ -65,7 +65,7 @@ const CoursesPage = () => {
 
   const handleDelete = (courseId) => {
     if (window.confirm("Are you sure you want to delete this course?")) {
-      setCourses(courses.filter((course) => course.id !== courseId));
+      setCourses(courses.filter((course) => course._id !== courseId));
     }
   };
 
