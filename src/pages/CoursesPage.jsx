@@ -49,15 +49,12 @@ const CoursesPage = () => {
 
       formData.append("thumbnail", values.thumbnail);
 
-      values.videos.forEach((video, index) => {
-        formData.append(`videos[${index}][title]`, video.title);
-        formData.append(`videos[${index}][url]`, video.url);
-      });
+      formData.append("videos", JSON.stringify(values.videos));
 
       const res = await createCourse(formData).unwrap();
       setCourses((prev) => [...prev, res?.course || res?.data?.course]);
       toast.success("Course created successfully");
-      setIsModalOpen(false);  
+      setIsModalOpen(false);
     } catch (error) {
       console.error("Error creating course:", error);
       toast.error("Failed to create course");
@@ -68,7 +65,6 @@ const CoursesPage = () => {
 
   const handleView = (courseId) => {
     navigate(`/course-details/${courseId}`);
-   
   };
 
   const handleEdit = (courseId) => {
@@ -76,18 +72,20 @@ const CoursesPage = () => {
   };
 
   const handleDeleteClick = (courseId) => {
-    const course = courses.find(c => c._id === courseId);
+    const course = courses.find((c) => c._id === courseId);
     setCourseToDelete(course);
     setIsDeleteModalOpen(true);
   };
 
-   const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = async () => {
     if (!courseToDelete) return;
 
     setIsDeleting(true);
     try {
       await deleteCourse(courseToDelete._id).unwrap();
-      setCourses((prev) => prev.filter((course) => course._id !== courseToDelete._id));
+      setCourses((prev) =>
+        prev.filter((course) => course._id !== courseToDelete._id)
+      );
       toast.success("Course deleted successfully");
     } catch (error) {
       console.error("Error deleting course:", error);
@@ -139,7 +137,11 @@ const CoursesPage = () => {
           </div>
 
           {isLoading ? (
-             <LoadingSpinner size="large" className="mt-8" text="Loading courses..." />
+            <LoadingSpinner
+              size="large"
+              className="mt-8"
+              text="Loading courses..."
+            />
           ) : error ? (
             <p className="text-center mt-6 text-red-500">
               Failed to load courses

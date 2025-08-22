@@ -9,6 +9,7 @@ import LoadingSpinner from "../components/course/LoadingSpinner";
 import StatCard from "../components/course/StatCard";
 import SectionCard from "../components/course/SectionCard";
 import ReviewCard from "../components/course/ReviewCard";
+import VideoCard from "../components/course/VideoCard";
 import { useSelector } from "react-redux";
 import defaultLoginProfile from "../assets/loginUserProfile.png";
 const CourseDetailsPage = () => {
@@ -176,7 +177,7 @@ const CourseDetailsPage = () => {
               >
                 {course.videos?.length > 0 ? (
                   <div className="space-y-4">
-                    {course.videos.map((video, index) => (
+                    {course.videos?.map((video, index) => (
                       <VideoCard
                         key={index}
                         video={video}
