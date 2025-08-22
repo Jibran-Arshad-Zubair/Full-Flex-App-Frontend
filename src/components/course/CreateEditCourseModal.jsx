@@ -2,40 +2,41 @@ import React, { useState } from "react";
 import { Formik, Form, FieldArray, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import InputField from "../ui/InputField";
-import SelectField from "../ui/SelectField";
 import Button from "../ui/Button";
 import Card from "../ui/Card";
 import { FiUpload, FiX, FiPlus, FiTrash2 } from "react-icons/fi";
+import CreatableSelect from "react-select/creatable";
 
 const CreateCourseModal = ({ isOpen, onClose, onSubmit }) => {
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
+
+  // ✅ Keep options in state
+  const [categoryOptions, setCategoryOptions] = useState([
+    { value: "web-development", label: "Web Development" },
+    { value: "ai", label: "Artificial Intelligence" },
+    { value: "design", label: "Design" },
+    { value: "marketing", label: "Marketing" },
+    { value: "other", label: "Other" },
+  ]);
 
   const initialValues = {
     title: "",
     description: "",
     price: "",
     thumbnail: null,
-    category: "",
-    videos: [{ title: "", url: "",}],
+    category: "", // Formik keeps only the string value
+    videos: [{ title: "", url: "" }],
   };
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
     description: Yup.string().required("Description is required"),
     price: Yup.number()
+      .typeError("Price must be a number")
       .required("Price is required")
       .min(0, "Price must be positive"),
-      thumbnail: Yup.mixed().required("Thumbnail is required"),
-      category: Yup.string().required("Category is required"),
+    category: Yup.string().required("Category is required"),
   });
-
-  const categories = [
-    { value: "web-development", label: "Web Development" },
-    { value: "ai", label: "Artificial Intelligence" },
-    { value: "design", label: "Design" },
-    { value: "marketing", label: "Marketing" },
-    { value: "other", label: "Other" },
-  ];
 
   const handleThumbnailChange = (event, setFieldValue) => {
     const file = event.currentTarget.files[0];
@@ -77,14 +78,14 @@ const CreateCourseModal = ({ isOpen, onClose, onSubmit }) => {
               validationSchema={validationSchema}
               onSubmit={onSubmit}
             >
-              {({ values, setFieldValue, isSubmitting }) => (
+              {({ values, setFieldValue, setFieldTouched, isSubmitting }) => (
                 <Form>
                   <div className="space-y-4">
                     <InputField
                       label="Course Title"
                       name="title"
                       type="text"
-                      placeholder="e.g., Gen AI "
+                      placeholder="e.g., Gen AI"
                     />
 
                     <div className="mb-4">
@@ -119,7 +120,52 @@ const CreateCourseModal = ({ isOpen, onClose, onSubmit }) => {
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Category
                         </label>
-                        <SelectField name="category" options={categories} />
+                        <CreatableSelect
+                          name="category"
+                          options={categoryOptions}
+                          value={
+                            categoryOptions.find(
+                              (o) => o.value === values.category
+                            ) || null
+                          }
+                          onChange={(option) => {
+                            setFieldValue(
+                              "category",
+                              option ? option.value : ""
+                            );
+                            setFieldTouched("category", true, false);
+                          }}
+                          onCreateOption={(inputValue) => {
+                            const trimmed = inputValue.trim();
+                            if (!trimmed) return;
+
+                            const exists = categoryOptions.some(
+                              (o) =>
+                                o.value.toLowerCase() === trimmed.toLowerCase()
+                            );
+                            const newOpt = { value: trimmed, label: trimmed };
+
+                            if (!exists)
+                              setCategoryOptions((prev) => [...prev, newOpt]);
+
+                            setFieldValue("category", trimmed);
+                            setFieldTouched("category", true, false);
+                          }}
+                          isClearable
+                          placeholder="Select or create a category"
+                          className="text-sm"
+                          classNamePrefix="rs"
+                        />
+                        <p className="mt-1 text-xs sm:text-sm text-blue-400">
+                          You can either select an existing option or type to
+                          create a new category.
+                        </p>
+
+                        <ErrorMessage
+                          name="category"
+                          component="div"
+                          className="text-red-500 text-sm mt-1"
+                        />
                       </div>
                     </div>
 
@@ -173,9 +219,7 @@ const CreateCourseModal = ({ isOpen, onClose, onSubmit }) => {
                             </h4>
                             <button
                               type="button"
-                              onClick={() =>
-                                push({ title: "", url: "", duration: "" })
-                              }
+                              onClick={() => push({ title: "", url: "" })}
                               className="text-sm text-indigo-600 hover:text-indigo-500"
                             >
                               <FiPlus className="inline mr-1" /> Add Video
