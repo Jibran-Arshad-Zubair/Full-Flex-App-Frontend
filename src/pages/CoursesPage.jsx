@@ -9,15 +9,22 @@ import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/course/LoadingSpinner";
 import {
   useCreateCourseMutation,
+  useDeleteCourseMutation,
   useGetAllCoursesQuery,
 } from "../Redux/queries/course/courseApi";
 import toast from "react-hot-toast";
+import ConfirmationModal from "../components/ui/ConfirmationModal";
 
 const CoursesPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [courses, setCourses] = useState([]);
   const [createCourse] = useCreateCourseMutation();
+  const [deleteCourse] = useDeleteCourseMutation();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [courseToDelete, setCourseToDelete] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const navigate = useNavigate();
 
   const { data: allCourses, error, isLoading } = useGetAllCoursesQuery();
@@ -68,11 +75,38 @@ const CoursesPage = () => {
     console.log("Edit course:", courseId);
   };
 
-  const handleDelete = (courseId) => {
-    if (window.confirm("Are you sure you want to delete this course?")) {
-      setCourses(courses.filter((course) => course._id !== courseId));
+  const handleDeleteClick = (courseId) => {
+    const course = courses.find(c => c._id === courseId);
+    setCourseToDelete(course);
+    setIsDeleteModalOpen(true);
+  };
+
+   const handleDeleteConfirm = async () => {
+    if (!courseToDelete) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteCourse(courseToDelete._id).unwrap();
+      setCourses((prev) => prev.filter((course) => course._id !== courseToDelete._id));
+      toast.success("Course deleted successfully");
+    } catch (error) {
+      console.error("Error deleting course:", error);
+      toast.error("Failed to delete course");
+    } finally {
+      setIsDeleting(false);
+      setIsDeleteModalOpen(false);
+      setCourseToDelete(null);
     }
   };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteModalOpen(false);
+    setCourseToDelete(null);
+  };
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="bg-gray-50 min-h-screen dark:bg-gray-900">
@@ -115,7 +149,7 @@ const CoursesPage = () => {
               courses={courses}
               onView={handleView}
               onEdit={handleEdit}
-              onDelete={handleDelete}
+              onDelete={handleDeleteClick}
             />
           ) : (
             <div className="text-center py-12">
@@ -136,6 +170,16 @@ const CoursesPage = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmit}
+      />
+
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Course"
+        message={`Are you sure you want to delete "${courseToDelete?.title}"? This action cannot be undone and all course data will be permanently removed.`}
+        confirmText="Delete Course"
+        isLoading={isDeleting}
       />
     </div>
   );

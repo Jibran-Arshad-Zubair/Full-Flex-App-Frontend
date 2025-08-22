@@ -96,7 +96,7 @@ const CoursesTable = ({ courses, onView, onEdit, onDelete }) => {
                         <FiEdit2 className="text-lg" />
                       </button>
                       <button
-                        onClick={() => onDelete(id)}
+                        onClick={() => onDelete(course._id || course.id)}
                         className="p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-800 text-red-600 dark:text-red-400"
                         aria-label="Delete"
                       >
