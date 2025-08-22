@@ -9,7 +9,7 @@ export const courseApi = injectApiEndpoints({
     createCourse: builder.mutation({
       query: (courseData) => ({
         url: appendUrl("create"),
-        method: "POST",
+        method: "post",
         body: courseData,
       }),
     }),
@@ -22,7 +22,7 @@ export const courseApi = injectApiEndpoints({
     deleteCourse: builder.mutation({
       query: (id) => ({
         url: appendUrl(`delete/${id}`),
-        method: "DELETE",
+        method: "delete",
       }),
     }),
   }),

@@ -2,7 +2,6 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { AxiosError } from "axios";
 import { del, get, patch, post, put } from "../utils/api_Helpers";
 
-
 const methods = {
   get: get,
   post: post,
@@ -41,7 +40,6 @@ const baseQuery = async ({ method = "get", ...args }) => {
     return { error };
   }
 };
-
 
 const baseApi = createApi({
   reducerPath: "api",

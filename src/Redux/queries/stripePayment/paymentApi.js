@@ -8,7 +8,7 @@ export const paymentApi =  injectApiEndpoints({
     createPaymentIntent: builder.mutation({
       query: (paymentData) => ({
         url: appendUrl("create-payment-intent"),
-        method: 'POST',
+        method: 'post',
         body: paymentData
       })
       

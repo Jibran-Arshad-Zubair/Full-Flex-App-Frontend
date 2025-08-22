@@ -8,7 +8,7 @@ export const messagesApi = injectApiEndpoints({
     sendMessage: builder.mutation({
       query: ({ id, body }) => ({
         url: appendUrl(`send-message/${id}`),
-        method: "POST",
+        method: "post",
         body,
       }),
       invalidatesTags: ["Message"],
@@ -17,7 +17,7 @@ export const messagesApi = injectApiEndpoints({
     getMessage: builder.query({
       query: (id) => ({
         url: appendUrl(`get-message/${id}`),
-        method: "GET",
+        method: "get",
       }),
       providesTags: ["Message"],
     }),

@@ -24,6 +24,7 @@ export const authApi =  injectApiEndpoints({
     }),
     getOtherUsers: builder.query({
       query: (id) => ({
+        
         url: appendUrl(`get-other-users/${id}`),
         method: "get",
       }),
