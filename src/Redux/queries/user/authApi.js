@@ -2,8 +2,6 @@ import { injectApiEndpoints } from "../../api";
 
 const url = "/users";
 const appendUrl = (segment = "") => `${url}/${segment}`;
-const token = localStorage.getItem("token");
-console.log("token", token);
 
 export const authApi = injectApiEndpoints({
   endpoints: (builder) => ({

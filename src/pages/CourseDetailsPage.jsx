@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/dashboard/Navbar";
 import Sidebar from "../components/dashboard/Sidebar";
-import {FiArrowLeft,FiClock,FiUsers,FiDollarSign,FiBook,FiStar,FiPlay,FiUser,} from "react-icons/fi";
+import {FiArrowLeft,FiUsers,FiDollarSign,FiBook,FiStar,FiPlay,FiUser,} from "react-icons/fi";
 import toast from "react-hot-toast";
 import { useGetSingleCourseQuery } from "../Redux/queries/course/courseApi";
 import LoadingSpinner from "../components/course/LoadingSpinner";

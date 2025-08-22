@@ -35,7 +35,7 @@ const CoursesTable = ({ courses, onView, onEdit, onDelete }) => {
 
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             {courses.map((course) => {
-              const id = course?._id || course?.id || Math.random(); // fallback key
+              const id = course?._id || course?.id || Math.random(); 
               const title = course?.title || "Untitled";
               const category =
                 typeof course?.category === "string"
