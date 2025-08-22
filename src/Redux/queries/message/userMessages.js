@@ -1,24 +1,13 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { injectApiEndpoints } from "../../api";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
+const url = "/messages";
+const appendUrl = (segment = "") => `${url}/${segment}`;
 
-export const messagesApi = createApi({
-  reducerPath: "messagesApi",
-   baseQuery: fetchBaseQuery({
-    baseUrl: API_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const token = getState().user?.authUser?.token || localStorage.getItem("token");
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
-  tagTypes: ["Message"], 
+export const messagesApi = injectApiEndpoints({
   endpoints: (builder) => ({
     sendMessage: builder.mutation({
       query: ({ id, body }) => ({
-        url: `/messages/send-message/${id}`,
+        url: appendUrl(`send-message/${id}`),
         method: "POST",
         body,
       }),
@@ -27,7 +16,7 @@ export const messagesApi = createApi({
 
     getMessage: builder.query({
       query: (id) => ({
-        url: `/messages/get-message/${id}`,
+        url: appendUrl(`get-message/${id}`),
         method: "GET",
       }),
       providesTags: ["Message"],

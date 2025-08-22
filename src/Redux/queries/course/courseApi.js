@@ -1,34 +1,27 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { injectApiEndpoints } from "../../api";
 
-export const courseApi = createApi({
-  reducerPath: "courseApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/v1/courses",
-    prepareHeaders: (headers, { getState }) => {
-      const token = getState().user?.authUser?.token || localStorage.getItem("token");
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+const url = "/courses";
+const appendUrl = (segment = "") => `${url}/${segment}`;
+
+export const courseApi = injectApiEndpoints({
+
   endpoints: (builder) => ({
     createCourse: builder.mutation({
       query: (courseData) => ({
-        url: "/create",
+        url: appendUrl("create"),
         method: "POST",
         body: courseData,
       }),
     }),
     getAllCourses: builder.query({
-      query: () => "/get-all",
+      query: () => appendUrl("get-all"),
     }),
     getSingleCourse: builder.query({
-      query: (id) => `/get-by-id/${id}`,
+      query: (id) => appendUrl(`get/${id}`),
     }),
     deleteCourse: builder.mutation({
       query: (id) => ({
-        url: `/delete/${id}`,
+        url: appendUrl(`delete/${id}`),
         method: "DELETE",
       }),
     }),

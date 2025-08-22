@@ -1,50 +1,38 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { injectApiEndpoints } from "../../api";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
+const url = "/users";
+const appendUrl = (segment = "") => `${url}/${segment}`;
 
-export const authApi = createApi({
-  reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: API_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const token =
-        getState().user?.authUser?.token || localStorage.getItem("token");
+export const authApi =  injectApiEndpoints({
 
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      headers.set("Content-Type", "application/json");
-      return headers;
-    },
-  }),
-  endpoints: (builder) => ({
+  endpoints: (builder) =>  ({
     registerUser: builder.mutation({
       query: (userData) => ({
-        url: "/users/register",
-        method: "POST",
+        url: appendUrl("register"),
+        method: "post",
         body: userData,
       }),
       invalidatesTags: ["User"],
     }),
     loginUser: builder.mutation({
       query: (userData) => ({
-        url: "/users/login",
-        method: "POST",
+        url: appendUrl("login"),
+        method: "post",
         body: userData,
       }),
       invalidatesTags: ["User"],
     }),
     getOtherUsers: builder.query({
       query: (id) => ({
-        url: `/users/get-other-users/${id}`,
-        method: "GET",
+        url: appendUrl(`get-other-users/${id}`),
+        method: "get",
       }),
       providesTags: ["User"],
     }),
       updateUser: builder.mutation({
       query: (userData) => ({
-        url: `/users/update/${userData._id}`,
-        method: "PUT",
+        url: appendUrl(`/update/${userData._id}`),
+        method: "put",
         body: userData,
       }),
       invalidatesTags: ["User"],

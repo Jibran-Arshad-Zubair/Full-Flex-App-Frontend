@@ -2,16 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/dashboard/Navbar";
 import Sidebar from "../components/dashboard/Sidebar";
-import {
-  FiArrowLeft,
-  FiClock,
-  FiUsers,
-  FiDollarSign,
-  FiBook,
-  FiStar,
-  FiPlay,
-  FiUser,
-} from "react-icons/fi";
+import {FiArrowLeft,FiClock,FiUsers,FiDollarSign,FiBook,FiStar,FiPlay,FiUser,} from "react-icons/fi";
 import toast from "react-hot-toast";
 import { useGetSingleCourseQuery } from "../Redux/queries/course/courseApi";
 import LoadingSpinner from "../components/course/LoadingSpinner";
@@ -20,20 +11,15 @@ import SectionCard from "../components/course/SectionCard";
 import ReviewCard from "../components/course/ReviewCard";
 import { useSelector } from "react-redux";
 import defaultLoginProfile from "../assets/loginUserProfile.png";
-
 const CourseDetailsPage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const {
-    data: courseData,
-    error,
-    isLoading,
-  } = useGetSingleCourseQuery(courseId);
+  const {data: courseData,error, isLoading} = useGetSingleCourseQuery(courseId);
   const [course, setCourse] = useState(null);
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const authUser = useSelector((state) => state.user.authUser);
-
+  
   useEffect(() => {
     if (courseData?.data) {
       setCourse(courseData.data);
@@ -213,36 +199,36 @@ const CourseDetailsPage = () => {
                 title="Instructor"
                 icon={<FiUser className="text-blue-600" />}
               >
-               <div className="flex items-center p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-xl hover:shadow-md transition-all duration-300 group">
-    <div className="relative">
-      <img
-        className="w-16 h-16 rounded-full border-4 border-white dark:border-gray-800 shadow-lg group-hover:scale-105 transition-transform duration-300"
-        src={authUser?.user?.profilePhoto || defaultLoginProfile}
-        alt={course.teacher?.fullName || "Instructor"}
-        onError={(e) => {
-          e.target.onerror = null;
-          e.target.src = defaultLoginProfile;
-        }}
-      />
-      <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-500 rounded-full border-2 border-white dark:border-gray-800 flex items-center justify-center">
-        <FiUser className="text-white text-xs" />
-      </div>
-    </div>
-    <div className="ml-4">
-      <p className="font-semibold text-gray-900 dark:text-white text-lg">
-        {course.teacher?.fullName || "Unknown Teacher"}
-      </p>
-      <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-        {course.teacher?.email}
-      </p>
-      <div className="flex items-center mt-2">
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-          <FiBook className="mr-1 w-3 h-3" />
-          Instructor
-        </span>
-      </div>
-    </div>
-  </div>
+                <div className="flex items-center p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-xl hover:shadow-md transition-all duration-300 group">
+                  <div className="relative">
+                    <img
+                      className="w-16 h-16 rounded-full border-4 border-white dark:border-gray-800 shadow-lg group-hover:scale-105 transition-transform duration-300"
+                      src={authUser?.user?.profilePhoto || defaultLoginProfile}
+                      alt={course.teacher?.fullName || "Instructor"}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = defaultLoginProfile;
+                      }}
+                    />
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-500 rounded-full border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                      <FiUser className="text-white text-xs" />
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <p className="font-semibold text-gray-900 dark:text-white text-lg">
+                      {course.teacher?.fullName || "Unknown Teacher"}
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                      {course.teacher?.email}
+                    </p>
+                    <div className="flex items-center mt-2">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                        <FiBook className="mr-1 w-3 h-3" />
+                        Instructor
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </SectionCard>
 
               <SectionCard
