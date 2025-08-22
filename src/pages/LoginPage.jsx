@@ -35,7 +35,8 @@ const LoginPage = () => {
         navigate("/dashboard");
       }, 2000);
       dispatch(setAuthUser(response.data));
-      localStorage.setItem("authUser", JSON.stringify(response.data.token));
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("authUser", JSON.stringify(response.data.user));
     } catch (err) {
       console.error("Login error", err);
       const errorMessage = err.data?.message || "Login failed";

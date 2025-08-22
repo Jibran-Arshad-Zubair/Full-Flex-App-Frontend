@@ -2,10 +2,11 @@ import { injectApiEndpoints } from "../../api";
 
 const url = "/users";
 const appendUrl = (segment = "") => `${url}/${segment}`;
+const token = localStorage.getItem("token");
+console.log("token", token);
 
-export const authApi =  injectApiEndpoints({
-
-  endpoints: (builder) =>  ({
+export const authApi = injectApiEndpoints({
+  endpoints: (builder) => ({
     registerUser: builder.mutation({
       query: (userData) => ({
         url: appendUrl("register"),
@@ -23,14 +24,19 @@ export const authApi =  injectApiEndpoints({
       invalidatesTags: ["User"],
     }),
     getOtherUsers: builder.query({
-      query: (id) => ({
-        
-        url: appendUrl(`get-other-users/${id}`),
-        method: "get",
-      }),
+      query: (id) => {
+      
+        return {
+          url: appendUrl(`get-other-users/${id}`),
+          method: "get",
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
+        };
+      },
       providesTags: ["User"],
     }),
-      updateUser: builder.mutation({
+    updateUser: builder.mutation({
       query: (userData) => ({
         url: appendUrl(`/update/${userData._id}`),
         method: "put",
