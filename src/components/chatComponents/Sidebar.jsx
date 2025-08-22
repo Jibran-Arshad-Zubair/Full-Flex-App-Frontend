@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useGetOtherUsersQuery } from "../../Redux/queries/user/authApi";
 import { useDispatch } from "react-redux";
 import { setSelectedUser } from "../../Redux/reduxSlices/chatSlice";
+import LoadingSpinner from "../../components/course/LoadingSpinner";
 const Sidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -50,7 +51,7 @@ const Sidebar = () => {
 
       <div className="flex-1 overflow-y-auto">
         {isLoading && (
-          <p className="p-4 text-sm  text-gray-500 text-center">Loading users...</p>
+           <LoadingSpinner size="medium" className="mx-auto mt-4" text="Loading users..." />
         )}
         {isError && (
           <p className="p-4 text-sm text-red-500 text-center">Failed to load users.</p>

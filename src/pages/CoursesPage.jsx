@@ -6,6 +6,7 @@ import { FiBookOpen } from "react-icons/fi";
 import CreateCourseModal from "../components/course/CreateEditCourseModal";
 import Button from "../components/ui/Button";
 import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../components/course/LoadingSpinner";
 import {
   useCreateCourseMutation,
   useGetAllCoursesQuery,
@@ -49,6 +50,7 @@ const CoursesPage = () => {
       const res = await createCourse(formData).unwrap();
       setCourses((prev) => [...prev, res?.course || res?.data?.course]);
       toast.success("Course created successfully");
+      setIsModalOpen(false);  
     } catch (error) {
       console.error("Error creating course:", error);
       toast.error("Failed to create course");
@@ -103,7 +105,7 @@ const CoursesPage = () => {
           </div>
 
           {isLoading ? (
-            <p className="text-center mt-6">Loading courses...</p>
+             <LoadingSpinner size="large" className="mt-8" text="Loading courses..." />
           ) : error ? (
             <p className="text-center mt-6 text-red-500">
               Failed to load courses
