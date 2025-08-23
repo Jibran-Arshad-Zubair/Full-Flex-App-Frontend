@@ -2,10 +2,10 @@ import defaultProfile from "../../assets/defaultProfile.png";
 
 const UserItem = ({
   name,
-  lastMessage,
+  // lastMessage,
   time,
   unread,
-  isTyping,
+  // isTyping,
   profilePhoto,
   onClick,
 }) => {
@@ -36,7 +36,7 @@ const UserItem = ({
       </div>
       <div className="ml-3 flex-1 min-w-0">
         <div className="flex justify-between items-center">
-          <h3 className="text-sm font-semibold text-gray-900 truncate">
+          <h3 className="text-sm font-semibold text-gray-900 truncate capitalize">
             {name}
           </h3>
           <span
@@ -47,13 +47,13 @@ const UserItem = ({
             {time}
           </span>
         </div>
-        <p className="text-sm text-gray-500 truncate">
+        {/* <p className="text-sm text-gray-500 truncate">
           {isTyping ? (
             <span className="text-blue-500 italic">Is typing a message...</span>
           ) : (
             lastMessage
           )}
-        </p>
+        </p> */}
       </div>
       {unread && <div className="ml-2 w-2 h-2 rounded-full bg-blue-500"></div>}
     </div>
