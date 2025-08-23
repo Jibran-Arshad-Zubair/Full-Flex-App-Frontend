@@ -50,6 +50,8 @@ const CoursesTable = ({ courses, onView, onEdit, onDelete }) => {
                   ? course.price.toLocaleString("ur-PK", {
                       style: "currency",
                       currency: "PKR",
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
                     })
                   : "PKR 0";
 

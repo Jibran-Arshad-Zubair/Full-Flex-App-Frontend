@@ -50,9 +50,7 @@ const NotificationsPanel = () => {
             2 new
           </span>
         </h3>
-        <button className="text-gray-400 hover:text-gray-600">
-          <FiX />
-        </button>
+      
       </div>
 
   

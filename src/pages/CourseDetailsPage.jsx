@@ -2,7 +2,17 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/dashboard/Navbar";
 import Sidebar from "../components/dashboard/Sidebar";
-import {FiArrowLeft,FiUsers,FiDollarSign,FiBook,FiStar,FiPlay,FiUser,FiCheck,} from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiUsers,
+  FiDollarSign,
+  FiBook,
+  FiStar,
+  FiPlay,
+  FiUser,
+  FiCheck,
+} from "react-icons/fi";
+import { BsCash } from "react-icons/bs";
 import toast from "react-hot-toast";
 import { useGetSingleCourseQuery } from "../Redux/queries/course/courseApi";
 import LoadingSpinner from "../components/course/LoadingSpinner";
@@ -27,7 +37,6 @@ const CourseDetailsPage = () => {
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const authUser = useSelector((state) => state.user.authUser);
- 
 
   useEffect(() => {
     if (courseData?.data) {
@@ -159,7 +168,6 @@ const CourseDetailsPage = () => {
                         Read full description
                       </button>
                     )}
-                         
                   </div>
                 </div>
               </div>
@@ -168,11 +176,13 @@ const CourseDetailsPage = () => {
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 <StatCard
-                  icon={<FiDollarSign />}
+                  icon={<BsCash />}
                   label="Price"
                   value={course.price?.toLocaleString("en-PK", {
                     style: "currency",
                     currency: "PKR",
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
                   })}
                   color="green"
                 />
