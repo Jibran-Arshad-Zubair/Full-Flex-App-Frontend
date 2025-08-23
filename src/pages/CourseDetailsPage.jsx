@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/dashboard/Navbar";
 import Sidebar from "../components/dashboard/Sidebar";
-import {FiArrowLeft,FiUsers,FiDollarSign,FiBook,FiStar,FiPlay,FiUser,} from "react-icons/fi";
+import {FiArrowLeft,FiUsers,FiDollarSign,FiBook,FiStar,FiPlay,FiUser,FiCheck,} from "react-icons/fi";
 import toast from "react-hot-toast";
 import { useGetSingleCourseQuery } from "../Redux/queries/course/courseApi";
 import LoadingSpinner from "../components/course/LoadingSpinner";
@@ -13,15 +13,21 @@ import VideoCard from "../components/course/VideoCard";
 import { useSelector } from "react-redux";
 
 import defaultLoginProfile from "../assets/loginUserProfile.png";
+import DescriptionModal from "../components/course/DescriptionModal";
 const CourseDetailsPage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const {data: courseData,error, isLoading} = useGetSingleCourseQuery(courseId);
+  const {
+    data: courseData,
+    error,
+    isLoading,
+  } = useGetSingleCourseQuery(courseId);
   const [course, setCourse] = useState(null);
   const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const authUser = useSelector((state) => state.user.authUser);
-  
+
   useEffect(() => {
     if (courseData?.data) {
       setCourse(courseData.data);
@@ -113,7 +119,7 @@ const CourseDetailsPage = () => {
             <div className="relative">
               {course.thumbnail ? (
                 <img
-                 src = {course.thumbnail}
+                  src={course.thumbnail}
                   alt={course.title}
                   className="w-full h-72 object-cover"
                 />
@@ -122,20 +128,44 @@ const CourseDetailsPage = () => {
                   <FiBook className="text-white text-8xl opacity-80" />
                 </div>
               )}
+
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
                 <div className="p-8 text-white">
                   <h1 className="text-4xl md:text-5xl font-bold mb-4">
                     {course.title}
                   </h1>
-                  <p className="text-lg opacity-90 max-w-3xl">
-                    {course.description}
-                  </p>
+
+                  <div className="relative">
+                    <p className="text-lg opacity-90 max-w-3xl md:hidden">
+                      {course.description?.split(" ").slice(0, 20).join(" ")}
+                      {course.description?.split(" ").length > 20 && "..."}
+                    </p>
+
+                    <p className="text-lg opacity-90 max-w-3xl hidden md:block lg:hidden">
+                      {course.description?.split(" ").slice(0, 30).join(" ")}
+                      {course.description?.split(" ").length > 30 && "..."}
+                    </p>
+
+                    <p className="text-lg opacity-90 max-w-3xl hidden lg:block">
+                      {course.description}
+                    </p>
+
+                    {course.description?.split(" ").length > 20 && (
+                      <button
+                        onClick={() => setIsDescriptionModalOpen(true)}
+                        className="hidden md:block lg:hidden mt-2 text-blue-300 hover:text-blue-200 text-sm font-medium underline transition-colors"
+                      >
+                        Read full description
+                      </button>
+                    )}
+                         
+                  </div>
                 </div>
               </div>
             </div>
 
             <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 <StatCard
                   icon={<FiDollarSign />}
                   label="Price"
@@ -150,6 +180,15 @@ const CourseDetailsPage = () => {
                   label="Students"
                   value={`${course.students?.length || 0} enrolled`}
                   color="blue"
+                />
+                <StatCard
+                  icon={<FiCheck />}
+                  label="Status"
+                  value={
+                    course.status?.charAt(0).toUpperCase() +
+                    course.status?.slice(1)
+                  }
+                  color={course.status === "active" ? "green" : "yellow"}
                 />
                 <StatCard
                   icon={<FiBook />}
@@ -197,51 +236,51 @@ const CourseDetailsPage = () => {
             </div>
 
             <div className="space-y-6">
-    <SectionCard
-  title="Instructor Profile"
-  icon={<FiUser className="text-blue-600" />}
->
-  <div className="flex flex-col items-center text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-xl hover:shadow-lg transition-all duration-300 group">
-    {/* Image with Status Indicator */}
-    <div className="relative mb-4">
-      <img
-        className="w-20 h-20 rounded-full border-4 border-white dark:border-gray-800 shadow-xl group-hover:scale-105 transition-transform duration-300"
-        src={authUser?.user?.profilePhoto || defaultLoginProfile}
-        alt={course.teacher?.fullName || "Instructor"}
-        onError={(e) => {
-          e.target.onerror = null;
-          e.target.src = defaultLoginProfile;
-        }}
-      />
-      <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white dark:border-gray-800 flex items-center justify-center">
-        <FiUser className="text-white text-xs" />
-      </div>
-    </div>
-    
-    {/* Content */}
-    <div className="w-full">
-      <h3 className="font-semibold text-gray-900 dark:text-white text-lg mb-1 truncate">
-        {course.teacher?.fullName || "Unknown Teacher"}
-      </h3>
-      <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 truncate">
-        {course.teacher?.email}
-      </p>
-      
-      {/* Badges */}
-      <div className="flex flex-wrap justify-center gap-2">
-        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-          <FiBook className="mr-1 w-3 h-3" />
-          Instructor
-        </span>
-        {course.teacher?.expertise && (
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-            {course.teacher.expertise}
-          </span>
-        )}
-      </div>
-    </div>
-  </div>
-</SectionCard>
+              <SectionCard
+                title="Instructor Profile"
+                icon={<FiUser className="text-blue-600" />}
+              >
+                <div className="flex flex-col items-center text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-xl hover:shadow-lg transition-all duration-300 group">
+                  {/* Image with Status Indicator */}
+                  <div className="relative mb-4">
+                    <img
+                      className="w-20 h-20 rounded-full border-4 border-white dark:border-gray-800 shadow-xl group-hover:scale-105 transition-transform duration-300"
+                      src={authUser?.user?.profilePhoto || defaultLoginProfile}
+                      alt={course.teacher?.fullName || "Instructor"}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = defaultLoginProfile;
+                      }}
+                    />
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                      <FiUser className="text-white text-xs" />
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="w-full">
+                    <h3 className="font-semibold text-gray-900 dark:text-white text-lg mb-1 truncate">
+                      {course.teacher?.fullName || "Unknown Teacher"}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 truncate">
+                      {course.teacher?.email}
+                    </p>
+
+                    {/* Badges */}
+                    <div className="flex flex-wrap justify-center gap-2">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                        <FiBook className="mr-1 w-3 h-3" />
+                        Instructor
+                      </span>
+                      {course.teacher?.expertise && (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                          {course.teacher.expertise}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </SectionCard>
 
               <SectionCard
                 title="Course Details"
@@ -291,6 +330,12 @@ const CourseDetailsPage = () => {
           </div>
         </div>
       </div>
+      <DescriptionModal
+        isOpen={isDescriptionModalOpen}
+        onClose={() => setIsDescriptionModalOpen(false)}
+        title={course.title}
+        description={course.description}
+      />
     </div>
   );
 };
