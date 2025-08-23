@@ -32,12 +32,26 @@ const CreateCourseModal = ({
     videos:
       course?.videos?.length > 0 ? course.videos : [{ title: "", url: "" }],
   };
+  console.log("initialValues",initialValues);
 
-  useEffect(() => {
-    if (course?.thumbnail && typeof course.thumbnail === "string") {
-      setThumbnailPreview(course.thumbnail);
+ useEffect(() => {
+  if (course?.category) {
+    const exists = categoryOptions.some(
+      (opt) => opt.value.toLowerCase() === course.category.toLowerCase()
+    );
+
+    if (!exists) {
+      setCategoryOptions((prev) => [
+        ...prev,
+        { value: course.category, label: course.category },
+      ]);
     }
-  }, [course]);
+  }
+
+  if (course?.thumbnail && typeof course.thumbnail === "string") {
+    setThumbnailPreview(course.thumbnail);
+  }
+}, [course]);
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),

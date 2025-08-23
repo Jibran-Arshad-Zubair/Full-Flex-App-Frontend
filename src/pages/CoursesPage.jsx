@@ -7,12 +7,7 @@ import CreateCourseModal from "../components/course/CreateEditCourseModal";
 import Button from "../components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/course/LoadingSpinner";
-import {
-  useCreateCourseMutation,
-  useDeleteCourseMutation,
-  useGetAllCoursesQuery,
-  useUpdateCourseMutation,
-} from "../Redux/queries/course/courseApi";
+import {useCreateCourseMutation,useDeleteCourseMutation,useGetAllCoursesQuery,useUpdateCourseMutation,} from "../Redux/queries/course/courseApi";
 import toast from "react-hot-toast";
 import ConfirmationModal from "../components/ui/ConfirmationModal";
 
@@ -98,7 +93,7 @@ const CoursesPage = () => {
       setIsModalOpen(false);
       setSelectedCourse(null);
     } catch (error) {
-      console.error("erooororor", error);
+      console.error("Error updating course:", error);
       toast.error("Failed to update course");
     } finally {
       setSubmitting(false);
