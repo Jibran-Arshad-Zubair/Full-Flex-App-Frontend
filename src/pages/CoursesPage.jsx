@@ -26,6 +26,8 @@ const CoursesPage = () => {
   const navigate = useNavigate();
 
   const { data: allCourses, error, isLoading } = useGetAllCoursesQuery();
+
+  console.log("allCoursesssss", allCourses);
   useEffect(() => {
     if (allCourses?.data) {
       setCourses(allCourses.data);

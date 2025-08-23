@@ -1,33 +1,56 @@
+import { useSelector } from 'react-redux';
 import DashboardChart from './DashboardGraph';
 import NotificationsPanel from './Notifications';
 import RecentActivities from './RecentActivities';
 import StatsCard from './StatsCard';
-import { FaMoneyBillWave, FaUsers, FaEnvelopeOpenText,FaBookOpen  } from 'react-icons/fa';
+import {  FaUserGraduate, FaHourglassHalf, FaCheckCircle, FaBook  } from 'react-icons/fa';
+import { useGetAllCoursesQuery } from '../../Redux/queries/course/courseApi';
 
 const MainContent = () => {
+const { data: allCourses } = useGetAllCoursesQuery();
+
+  const authUser = useSelector((state) => state.user.authUser);
+const userId = authUser?.user?._id;
+
+
+const myCourses = allCourses?.data?.filter(
+  (course) => course.teacher._id === userId
+) || [];
+
+const totalCourses = myCourses.length;
+
+const activeCourses = myCourses.filter(c => c.status === "active").length;
+// const inactiveCourses = myCourses.filter(c => c.status === "inactive").length;
+const pendingCourses = myCourses.filter(c => c.status === "pending").length;
+
+const enrolledStudents = myCourses.reduce(
+  (acc, course) => acc + (course.students?.length || 0),
+  0
+);
+
   const stats = [
   {
-    title: 'Total Earnings',
-    value: '$45,231',
-    icon: <FaMoneyBillWave className="w-5 h-5 text-indigo-500" />,
+    title: 'Total Courses',
+    value: totalCourses,
+    icon: <FaBook className="w-5 h-5 text-indigo-500" />, 
     color: 'indigo',
   },
   {
     title: 'Enrolled Students',
-    value: '2,453',
-    icon: <FaUsers className="w-5 h-5 text-blue-500" />,
+    value: enrolledStudents,
+    icon: <FaUserGraduate className="w-5 h-5 text-blue-500" />, 
     color: 'blue',
   },
   {
-    title: 'Unread Messages',
-    value: '12',
-    icon: <FaEnvelopeOpenText className="w-5 h-5 text-green-500" />,
+    title: 'Pending Courses',
+    value: pendingCourses,
+    icon: <FaHourglassHalf className="w-5 h-5 text-green-500" />, 
     color: 'green',
   },
   {
     title: 'Active Courses',
-    value: '5',
-    icon: <FaBookOpen className="w-5 h-5 text-yellow-500" />,
+    value: activeCourses,
+    icon: <FaCheckCircle className="w-5 h-5 text-yellow-500" />, 
     color: 'yellow',
   },
 ];

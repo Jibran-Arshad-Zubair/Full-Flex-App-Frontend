@@ -27,6 +27,7 @@ const CourseDetailsPage = () => {
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const authUser = useSelector((state) => state.user.authUser);
+ 
 
   useEffect(() => {
     if (courseData?.data) {
@@ -131,7 +132,7 @@ const CourseDetailsPage = () => {
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
                 <div className="p-8 text-white">
-                  <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                  <h1 className="text-3xl md:text-4xl font-bold mb-4">
                     {course.title}
                   </h1>
 
