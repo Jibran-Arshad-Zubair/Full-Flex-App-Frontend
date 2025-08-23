@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, FieldArray, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import InputField from "../ui/InputField";
@@ -7,26 +7,37 @@ import Card from "../ui/Card";
 import { FiUpload, FiX, FiPlus, FiTrash2 } from "react-icons/fi";
 import CreatableSelect from "react-select/creatable";
 
-const CreateCourseModal = ({ isOpen, onClose, onSubmit }) => {
+const CreateCourseModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  mode = "create",
+  course = null,
+}) => {
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
 
-  // ✅ Keep options in state
   const [categoryOptions, setCategoryOptions] = useState([
     { value: "web-development", label: "Web Development" },
     { value: "ai", label: "Artificial Intelligence" },
     { value: "design", label: "Design" },
     { value: "marketing", label: "Marketing" },
-    { value: "other", label: "Other" },
   ]);
 
   const initialValues = {
-    title: "",
-    description: "",
-    price: "",
+    title: course?.title || "",
+    description: course?.description || "",
+    price: course?.price || "",
     thumbnail: null,
-    category: "", // Formik keeps only the string value
-    videos: [{ title: "", url: "" }],
+    category: course?.category || "",
+    videos:
+      course?.videos?.length > 0 ? course.videos : [{ title: "", url: "" }],
   };
+
+  useEffect(() => {
+    if (course?.thumbnail && typeof course.thumbnail === "string") {
+      setThumbnailPreview(course.thumbnail);
+    }
+  }, [course]);
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
@@ -63,7 +74,7 @@ const CreateCourseModal = ({ isOpen, onClose, onSubmit }) => {
           <div className="px-6 py-4">
             <div className="flex justify-between items-center mb-4 border-b pb-2">
               <h3 className="text-lg font-bold text-gray-900">
-                Create New Course
+                {mode === "edit" ? "Edit Course" : "Create New Course"}
               </h3>
               <button
                 onClick={onClose}
@@ -74,6 +85,7 @@ const CreateCourseModal = ({ isOpen, onClose, onSubmit }) => {
             </div>
 
             <Formik
+              enableReinitialize
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={onSubmit}
@@ -156,11 +168,6 @@ const CreateCourseModal = ({ isOpen, onClose, onSubmit }) => {
                           className="text-sm"
                           classNamePrefix="rs"
                         />
-                        <p className="mt-1 text-xs sm:text-sm text-blue-400">
-                          You can either select an existing option or type to
-                          create a new category.
-                        </p>
-
                         <ErrorMessage
                           name="category"
                           component="div"
@@ -280,7 +287,13 @@ const CreateCourseModal = ({ isOpen, onClose, onSubmit }) => {
                       disabled={isSubmitting}
                       className="bg-indigo-600 hover:bg-indigo-700"
                     >
-                      {isSubmitting ? "Creating..." : "Create Course"}
+                      {isSubmitting
+                        ? mode === "edit"
+                          ? "Updating..."
+                          : "Creating..."
+                        : mode === "edit"
+                        ? "Update Course"
+                        : "Create Course"}
                     </Button>
                   </div>
                 </Form>

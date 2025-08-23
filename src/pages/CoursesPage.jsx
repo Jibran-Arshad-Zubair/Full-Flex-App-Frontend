@@ -11,6 +11,7 @@ import {
   useCreateCourseMutation,
   useDeleteCourseMutation,
   useGetAllCoursesQuery,
+  useUpdateCourseMutation,
 } from "../Redux/queries/course/courseApi";
 import toast from "react-hot-toast";
 import ConfirmationModal from "../components/ui/ConfirmationModal";
@@ -24,6 +25,8 @@ const CoursesPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState("create");
+  const [selectedCourse, setSelectedCourse] = useState(null);
 
   const navigate = useNavigate();
 
@@ -34,10 +37,12 @@ const CoursesPage = () => {
     }
   }, [allCourses]);
 
+  const [updateCourse] = useUpdateCourseMutation();
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleCreateSubmit = async (values, { setSubmitting }) => {
     try {
       const formData = new FormData();
       formData.append("title", values.title);
@@ -63,12 +68,58 @@ const CoursesPage = () => {
     }
   };
 
+  const handleUpdateSubmit = async (values, { setSubmitting }) => {
+    try {
+      const formData = new FormData();
+      formData.append("title", values.title);
+      formData.append("description", values.description);
+      formData.append("price", values.price);
+      if (values.category) {
+        formData.append("category", values.category);
+      }
+      if (values.thumbnail) {
+        formData.append("thumbnail", values.thumbnail);
+      }
+      formData.append("videos", JSON.stringify(values.videos));
+
+      const res = await updateCourse({
+        id: selectedCourse._id,
+        data: formData,
+      }).unwrap();
+
+      setCourses((prev) =>
+        prev.map((course) =>
+          course._id === selectedCourse._id
+            ? res?.course || res?.data?.course
+            : course
+        )
+      );
+      toast.success("Course updated successfully");
+      setIsModalOpen(false);
+      setSelectedCourse(null);
+    } catch (error) {
+      console.error("erooororor", error);
+      toast.error("Failed to update course");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleView = (courseId) => {
     navigate(`/course-details/${courseId}`);
   };
 
   const handleEdit = (courseId) => {
-    console.log("Edit course:", courseId);
+    const course = courses.find((c) => c._id === courseId);
+    setSelectedCourse(course);
+    setModalMode("edit");
+    setIsModalOpen(true);
+  };
+
+  const openCreateModal = () => {
+    setSelectedCourse(null);
+    setModalMode("create");
+    setIsModalOpen(true);
   };
 
   const handleDeleteClick = (courseId) => {
@@ -128,7 +179,7 @@ const CoursesPage = () => {
 
             <div className="flex justify-center md:justify-end">
               <Button
-                onClick={() => setIsModalOpen(true)}
+                onClick={openCreateModal}
                 className="px-5 py-2.5 text-sm sm:text-base rounded-lg shadow-md bg-blue-600 hover:bg-blue-700 text-white transition-all"
               >
                 Create Course
@@ -171,7 +222,9 @@ const CoursesPage = () => {
       <CreateCourseModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={handleSubmit}
+        onSubmit={modalMode === "edit" ? handleUpdateSubmit : handleCreateSubmit}
+        mode={modalMode}
+        course={selectedCourse}
       />
 
       <ConfirmationModal

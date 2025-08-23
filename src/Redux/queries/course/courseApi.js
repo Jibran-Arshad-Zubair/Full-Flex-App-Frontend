@@ -43,13 +43,22 @@ export const courseApi = injectApiEndpoints({
         { type: "Course", id: "LIST" },
       ],
     }),
+
+    updateCourse: builder.mutation({
+      query: ({ id, data }) => ({
+        url: appendUrl(`update/${id}`),
+        method: "put",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "Course", id: "LIST" }],
+    }),
   }),
 });
-
 
 export const {
   useCreateCourseMutation,
   useGetAllCoursesQuery,
   useGetSingleCourseQuery,
   useDeleteCourseMutation,
+  useUpdateCourseMutation,
 } = courseApi;
