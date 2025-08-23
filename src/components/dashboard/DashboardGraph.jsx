@@ -1,83 +1,171 @@
 import { FiBarChart2, FiTrendingUp, FiPieChart } from 'react-icons/fi';
-
+import { useSelector } from 'react-redux';
+import { useGetAllCoursesQuery } from '../../Redux/queries/course/courseApi';
+import {  AreaChart,Area,XAxis,YAxis,CartesianGrid,Tooltip,ResponsiveContainer,PieChart,Pie,Cell,} from 'recharts';
+import { useState, useMemo } from 'react';
 const DashboardChart = () => {
+  const [chartType, setChartType] = useState('area'); 
+  const { data: allCourses, isLoading } = useGetAllCoursesQuery();
+  const authUser = useSelector((state) => state.user.authUser);
+  const userId = authUser?.user?._id;
+
+  const myCourses = useMemo(() => {
+    return allCourses?.data?.filter(
+      (course) => course.teacher._id === userId
+    ) || [];
+  }, [allCourses?.data, userId]);
+
+  
+  const chartData = useMemo(() => {
+    const coursesByMonth = {};
+    const now = new Date();
+    
+   
+    for (let i = 5; i >= 0; i--) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthKey = date.toLocaleString('default', { month: 'short' });
+      coursesByMonth[monthKey] = {
+        name: monthKey,
+        'Active Courses': 0,
+        'Pending Courses': 0,
+        'Total Students': 0,
+      };
+    }
+
+    myCourses.forEach((course) => {
+      const courseDate = new Date(course.createdAt);
+      const monthKey = courseDate.toLocaleString('default', { month: 'short' });
+      
+      if (coursesByMonth[monthKey]) {
+        if (course.status === 'active') {
+          coursesByMonth[monthKey]['Active Courses']++;
+        } else if (course.status === 'pending') {
+          coursesByMonth[monthKey]['Pending Courses']++;
+        }
+        coursesByMonth[monthKey]['Total Students'] += course.students?.length || 0;
+      }
+    });
+
+    return Object.values(coursesByMonth);
+  }, [myCourses]);
+
+
+  const pieData = useMemo(() => {
+    const active = myCourses.filter(c => c.status === 'active').length;
+    const pending = myCourses.filter(c => c.status === 'pending').length;
+    return [
+      { name: 'Active Courses', value: active },
+      { name: 'Pending Courses', value: pending },
+    ];
+  }, [myCourses]);
+
+  const COLORS = ['#4F46E5', '#10B981'];
+
   return (
     <div className="relative group overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-gray-200 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
-  
       <div className="px-6 pt-5 pb-2 border-b border-gray-200/50">
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-semibold text-gray-800 flex items-center">
             <FiTrendingUp className="mr-2 text-blue-500" />
-            Performance Analytics
+            Course Analytics
           </h3>
           <div className="flex space-x-2">
-            <button className="p-1.5 rounded-lg bg-white border border-gray-200 hover:bg-blue-50 transition-colors">
-              <FiBarChart2 className="text-gray-600" />
+            <button 
+              className={`p-1.5 rounded-lg border border-gray-200 transition-colors ${
+                chartType === 'area' ? 'bg-blue-50 text-blue-600' : 'bg-white text-gray-600 hover:bg-blue-50'
+              }`}
+              onClick={() => setChartType('area')}
+            >
+              <FiBarChart2 />
             </button>
-            <button className="p-1.5 rounded-lg bg-white border border-gray-200 hover:bg-blue-50 transition-colors">
-              <FiPieChart className="text-gray-600" />
+            <button 
+              className={`p-1.5 rounded-lg border border-gray-200 transition-colors ${
+                chartType === 'pie' ? 'bg-blue-50 text-blue-600' : 'bg-white text-gray-600 hover:bg-blue-50'
+              }`}
+              onClick={() => setChartType('pie')}
+            >
+              <FiPieChart />
             </button>
           </div>
         </div>
-        <p className="text-sm text-gray-500 mt-1">Last 30 days overview</p>
+        <p className="text-sm text-gray-500 mt-1">Last 6 months overview</p>
       </div>
 
-   
-      <div className="relative h-64 p-4 flex items-center justify-center">
-      
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -left-10 -top-10 w-32 h-32 rounded-full bg-blue-100/50 blur-xl"></div>
-          <div className="absolute right-10 bottom-0 w-40 h-40 rounded-full bg-indigo-100/50 blur-xl"></div>
-        </div>
-
-      
-        <div className="relative w-full h-full">
-         
-          <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between px-6 h-4/5">
-            {[30, 60, 45, 80, 65, 90, 50, 75, 60, 85].map((height, index) => (
-              <div 
-                key={index}
-                className="relative w-8 flex flex-col items-center group"
+      <div className="relative h-[300px] p-4">
+        {isLoading ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-gray-500">Loading...</div>
+          </div>
+        ) : chartType === 'area' ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart
+              data={chartData}
+              margin={{
+                top: 10,
+                right: 30,
+                left: 0,
+                bottom: 0,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Area
+                type="monotone"
+                dataKey="Active Courses"
+                stackId="1"
+                stroke="#4F46E5"
+                fill="#4F46E5"
+                fillOpacity={0.6}
+              />
+              <Area
+                type="monotone"
+                dataKey="Pending Courses"
+                stackId="1"
+                stroke="#10B981"
+                fill="#10B981"
+                fillOpacity={0.6}
+              />
+              <Area
+                type="monotone"
+                dataKey="Total Students"
+                stroke="#6366F1"
+                fill="#6366F1"
+                fillOpacity={0.2}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={pieData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
               >
-                <div 
-                  className={`w-full rounded-t-lg transition-all duration-500 ease-out ${index % 3 === 0 ? 'bg-gradient-to-t from-blue-500 to-blue-400' : 'bg-gradient-to-t from-indigo-500 to-indigo-400'}`}
-                  style={{ height: `${height}%` }}
-                >
-                  <div className="absolute -top-6 opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-2 py-1 text-xs font-medium bg-gray-800 text-white rounded whitespace-nowrap">
-                    ${height * 100}
-                  </div>
-                </div>
-                <span className="absolute -bottom-6 text-xs text-gray-500">
-                  {['M', 'T', 'W', 'T', 'F', 'S', 'S', 'M', 'T', 'W'][index]}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          
-          <div className="absolute inset-0 grid grid-cols-4 grid-rows-4 pointer-events-none">
-            {[...Array(16)].map((_, i) => (
-              <div key={i} className="border-t border-r border-gray-200/30"></div>
-            ))}
-          </div>
-        </div>
+                {pieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
       </div>
 
-     
       <div className="px-6 py-3 border-t border-gray-200/50 bg-white/50 flex justify-between items-center">
         <div className="text-sm">
-          <span className="text-gray-500">Total: </span>
-          <span className="font-medium text-blue-600">$24,560</span>
+          <span className="text-gray-500">Total Courses: </span>
+          <span className="font-medium text-blue-600">{myCourses.length}</span>
         </div>
         <div className="flex items-center text-sm">
-          <span className="flex items-center text-green-500">
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-            </svg>
-            +12.5%
-          </span>
-          <span className="mx-2 text-gray-300">|</span>
-          <span className="text-gray-500">vs last month</span>
+          <span className="text-gray-500">Updated in real-time</span>
         </div>
       </div>
     </div>
