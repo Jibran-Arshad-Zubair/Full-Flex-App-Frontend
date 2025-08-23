@@ -9,9 +9,8 @@ import { useGetAllCoursesQuery } from '../../Redux/queries/course/courseApi';
 const MainContent = () => {
 const { data: allCourses } = useGetAllCoursesQuery();
 
-  const authUser = useSelector((state) => state.user.authUser);
+const authUser = useSelector((state) => state.user.authUser);
 const userId = authUser?.user?._id;
-
 
 const myCourses = allCourses?.data?.filter(
   (course) => course.teacher._id === userId
@@ -22,12 +21,10 @@ const totalCourses = myCourses.length;
 const activeCourses = myCourses.filter(c => c.status === "active").length;
 // const inactiveCourses = myCourses.filter(c => c.status === "inactive").length;
 const pendingCourses = myCourses.filter(c => c.status === "pending").length;
-
 const enrolledStudents = myCourses.reduce(
   (acc, course) => acc + (course.students?.length || 0),
   0
 );
-
   const stats = [
   {
     title: 'Total Courses',
@@ -55,7 +52,6 @@ const enrolledStudents = myCourses.reduce(
   },
 ];
 
-
   return (
     <div className="p-4 sm:ml-64">
   
@@ -74,7 +70,6 @@ const enrolledStudents = myCourses.reduce(
           ))}
         </div>
 
-       
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="h-full">
             <RecentActivities />

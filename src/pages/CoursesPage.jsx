@@ -22,12 +22,8 @@ const CoursesPage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("create");
   const [selectedCourse, setSelectedCourse] = useState(null);
-
   const navigate = useNavigate();
-
   const { data: allCourses, error, isLoading } = useGetAllCoursesQuery();
-
-  console.log("allCoursesssss", allCourses);
   useEffect(() => {
     if (allCourses?.data) {
       setCourses(allCourses.data);

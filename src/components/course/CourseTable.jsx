@@ -27,6 +27,9 @@ const CoursesTable = ({ courses, onView, onEdit, onDelete }) => {
               <th className="px-6 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Students
               </th>
+              <th className="px-6 py-3  text-right text-sm font-semibold text-gray-700 dark:text-gray-300">
+                Status
+              </th>
               <th className="px-6 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Actions
               </th>
@@ -35,7 +38,7 @@ const CoursesTable = ({ courses, onView, onEdit, onDelete }) => {
 
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             {courses.map((course) => {
-              const id = course?._id || course?.id || Math.random(); 
+              const id = course?._id || course?.id || Math.random();
               const title = course?.title || "Untitled";
               const category =
                 typeof course?.category === "string"
@@ -77,6 +80,24 @@ const CoursesTable = ({ courses, onView, onEdit, onDelete }) => {
 
                   <td className="px-6 py-4 align-middle text-right text-gray-600 dark:text-gray-300">
                     {students}
+                  </td>
+
+                  <td className="px-6 py-4 align-middle text-right">
+                    {course?.status === "active" && (
+                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
+                        Active
+                      </span>
+                    )}
+                    {course?.status === "inactive" && (
+                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-700">
+                        Inactive
+                      </span>
+                    )}
+                    {course?.status === "pending" && (
+                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700">
+                        Pending
+                      </span>
+                    )}
                   </td>
 
                   <td className="px-6 py-4 align-middle">
