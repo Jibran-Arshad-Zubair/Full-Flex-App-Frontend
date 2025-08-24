@@ -7,7 +7,11 @@ import {  FaUserGraduate, FaHourglassHalf, FaCheckCircle, FaBook  } from 'react-
 import { useGetAllCoursesQuery } from '../../Redux/queries/course/courseApi';
 
 const MainContent = () => {
-const { data: allCourses } = useGetAllCoursesQuery();
+const {
+  data: allCourses,
+} = useGetAllCoursesQuery(undefined, {
+  refetchOnMountOrArgChange: true,  
+});
 
 const authUser = useSelector((state) => state.user.authUser);
 const userId = authUser?.user?._id;

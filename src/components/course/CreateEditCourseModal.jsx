@@ -32,7 +32,7 @@ const CreateCourseModal = ({
     videos:
       course?.videos?.length > 0 ? course.videos : [{ title: "", url: "" }],
   };
-  console.log("initialValues",initialValues);
+ 
 
  useEffect(() => {
   if (course?.category) {

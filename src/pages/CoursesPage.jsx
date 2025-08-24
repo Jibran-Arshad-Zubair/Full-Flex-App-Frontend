@@ -23,7 +23,7 @@ const CoursesPage = () => {
   const [modalMode, setModalMode] = useState("create");
   const [selectedCourse, setSelectedCourse] = useState(null);
   const navigate = useNavigate();
-  const { data: allCourses, error, isLoading } = useGetAllCoursesQuery();
+  const {data: allCourses,error,isLoading} = useGetAllCoursesQuery(undefined, { refetchOnMountOrArgChange: true});
   useEffect(() => {
     if (allCourses?.data) {
       setCourses(allCourses.data);
