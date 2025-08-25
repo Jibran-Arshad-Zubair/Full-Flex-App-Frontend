@@ -2,37 +2,37 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './routes/AppRoutes';
-// import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-// import { io } from 'socket.io-client';
+import { socket } from './utils/socket';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 export default function App() {
-  //  const [socket ,setSocket] = useState(null);
+  const authUser = useSelector((state) => state.user.authUser);
 
-   const authUser = useSelector((state) => state.user.authUser);
-  //  console.log("authUserhhhhhhhh",authUser);
+  useEffect(() => {
+    if (authUser) {
+      // Connect socket when user is authenticated
+      socket.connect();
+    } else {
+      // Disconnect socket when user is not authenticated
+      socket.disconnect();
+    }
 
-  //  useEffect(() => {
-  //   if(authUser){
-  //    const newSocket = io('http://localhost:5000',{
-      
-  //    });
-  //    setSocket(newSocket);
-  //   }
-  //  },[authUser]);
+    // Cleanup on component unmount
+    return () => {
+      socket.disconnect();
+    };
+  }, [authUser]);
 
   return (
- 
-      <BrowserRouter>
+    <BrowserRouter>
       <Elements stripe={stripePromise}>
         <div className="min-h-screen bg-gray-100">
           <AppRoutes />
         </div>
       </Elements>
     </BrowserRouter>
-  
-   
   );
 }
