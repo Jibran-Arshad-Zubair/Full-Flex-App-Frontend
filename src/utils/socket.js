@@ -1,15 +1,13 @@
 import { io } from 'socket.io-client';
-
 const SOCKET_URL = 'http://localhost:5000';
-
 export const socket = io(SOCKET_URL, {
-    autoConnect: false, // Don't connect automatically
-    reconnection: true, // Enable reconnection
-    reconnectionAttempts: 5, // Maximum number of reconnection attempts
-    reconnectionDelay: 1000, // Delay between reconnection attempts in milliseconds
+    autoConnect: false, 
+    reconnection: true, 
+    reconnectionAttempts: 5, 
+    reconnectionDelay: 1000, 
 });
 
-// Socket event listeners for connection status
+
 socket.on('connect', () => {
     console.log('Connected to socket server');
 });
