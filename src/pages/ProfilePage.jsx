@@ -1,71 +1,17 @@
 import React, { useState } from "react";
-import { Formik, Form } from "formik";
 import Navbar from "../components/dashboard/Navbar";
 import Sidebar from "../components/dashboard/Sidebar";
-import InputField from "../components/ui/InputField";
-import SelectField from "../components/ui/SelectField";
-import Button from "../components/ui/Button";
-import {
-  FiUser,
-  FiMail,
-  FiPhone,
-  FiEdit2,
-  FiSave,
-  FiLock,
-} from "react-icons/fi";
+import { FiUser, FiMail, FiPhone } from "react-icons/fi";
 import defaultLoginProfile from "../assets/loginUserProfile.png";
 import { useSelector } from "react-redux";
-import { useUpdateUserMutation } from "../Redux/queries/user/authApi";
-import toast from "react-hot-toast";
 
 const ProfilePage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [profileImage, setProfileImage] = useState(null);
+
   const authUser = useSelector((state) => state.user.authUser);
-  const [updatedUser] = useUpdateUserMutation();
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const initialValues = {
-    fullName: authUser?.user?.fullName || "",
-    userName: authUser?.user?.userName || "",
-    email: authUser?.user?.email || "",
-    phoneNumber: authUser?.user?.phoneNumber || "",
-    gender: authUser?.user?.gender || "male",
-    status: authUser?.user?.status || "active",
-  };
-
-  const handleSubmit = (values) => {
-    try {
-      const payload = {
-        ...values,
-        _id: authUser?.user?._id,
-      };
-
-      if (profileImage) {
-        values.profileImage = profileImage;
-      }
-      updatedUser(payload);
-      toast.success("Profile updated successfully");
-    } catch {
-      toast.error("Failed to update profile");
-    } finally {
-      setIsEditing(false);
-    }
   };
 
   return (
@@ -79,11 +25,10 @@ const ProfilePage = () => {
         }`}
       >
         <div className="p-6 border-2 border-gray-200 border-dashed rounded-2xl mt-14 bg-white">
-          <div className="flex flex-col items-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-800">
-              Profile Settings
+          <div className="flex flex-col mb-8 sm:ml-6 md:ml-24 lg:ml-14">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-800 text-center sm:text-left">
+              Personal Information
             </h1>
-            <p className="text-gray-600">Manage your personal information</p>
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8">
@@ -91,28 +36,13 @@ const ProfilePage = () => {
               <div className="relative group mb-4">
                 <img
                   className="w-40 h-40 rounded-full border-4 border-white shadow-lg object-cover"
-                  src={
-                    profileImage ||
-                    authUser?.user?.profilePhoto ||
-                    defaultLoginProfile
-                  }
+                  src={authUser?.user?.profilePhoto || defaultLoginProfile}
                   alt="Profile"
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = defaultLoginProfile;
                   }}
                 />
-                {isEditing && (
-                  <label className="absolute bottom-2 right-2 bg-indigo-600 text-white p-2 rounded-full cursor-pointer hover:bg-indigo-700 transition-colors shadow-md">
-                    <FiEdit2 className="w-5 h-5" />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handleImageChange}
-                    />
-                  </label>
-                )}
               </div>
 
               <div className="text-center">
@@ -135,100 +65,53 @@ const ProfilePage = () => {
             </div>
 
             <div className="w-full lg:w-2/3">
-              <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-                {({ isSubmitting }) => (
-                  <Form className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <InputField
-                        label="Full Name"
-                        name="fullName"
-                        type="text"
-                        placeholder="Enter your full name"
-                        icon={<FiUser className="text-gray-400" />}
-                        disabled={!isEditing}
-                      />
-                      <InputField
-                        label="Username"
-                        name="userName"
-                        type="text"
-                        placeholder="Enter your username"
-                        icon={<FiUser className="text-gray-400" />}
-                        disabled={!isEditing}
-                      />
-                      <InputField
-                        label="Email"
-                        name="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        icon={<FiMail className="text-gray-400" />}
-                        disabled
-                      />
-                      <InputField
-                        label="Phone Number"
-                        name="phoneNumber"
-                        type="tel"
-                        placeholder="Enter your phone number"
-                        icon={<FiPhone className="text-gray-400" />}
-                        disabled={!isEditing}
-                      />
-                      <SelectField
-                        label="Gender"
-                        name="gender"
-                        options={[
-                          { value: "male", label: "Male" },
-                          { value: "female", label: "Female" },
-                          { value: "other", label: "Other" },
-                        ]}
-                        icon={<FiUser className="text-gray-400" />}
-                        disabled={!isEditing}
-                      />
+              <div className="bg-white rounded-lg shadow p-6 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center text-gray-600">
+                      <FiUser className="mr-2" />
+                      <span className="font-medium">Full Name:</span>
                     </div>
+                    <p className="text-gray-800">{authUser?.user?.fullName}</p>
+                  </div>
 
-                    <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-gray-200">
-                      {!isEditing ? (
-                        <>
-                          <Button
-                            type="button"
-                            onClick={() => setIsEditing(true)}
-                            className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700"
-                          >
-                            <FiEdit2 className="w-4 h-4" />
-                            Edit Profile
-                          </Button>
-                          <Button
-                            type="button"
-                            className="flex items-center justify-center gap-2 bg-gray-600 hover:bg-gray-700"
-                          >
-                            <FiLock className="w-4 h-4" />
-                            Change Password
-                          </Button>
-                        </>
-                      ) : (
-                        <>
-                          <Button
-                            type="button"
-                            onClick={() => {
-                              setIsEditing(false);
-                              setProfileImage(null);
-                            }}
-                            className="flex items-center justify-center gap-2 bg-gray-600 hover:bg-gray-700"
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            type="submit"
-                            className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700"
-                            disabled={isSubmitting}
-                          >
-                            <FiSave className="w-4 h-4" />
-                            Save Changes
-                          </Button>
-                        </>
-                      )}
+                  <div className="space-y-2">
+                    <div className="flex items-center text-gray-600">
+                      <FiUser className="mr-2" />
+                      <span className="font-medium">Username:</span>
                     </div>
-                  </Form>
-                )}
-              </Formik>
+                    <p className="text-gray-800">{authUser?.user?.userName}</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center text-gray-600">
+                      <FiMail className="mr-2" />
+                      <span className="font-medium">Email:</span>
+                    </div>
+                    <p className="text-gray-800">{authUser?.user?.email}</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center text-gray-600">
+                      <FiPhone className="mr-2" />
+                      <span className="font-medium">Phone Number:</span>
+                    </div>
+                    <p className="text-gray-800">
+                      {authUser?.user?.phoneNumber || "Not provided"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center text-gray-600">
+                      <FiUser className="mr-2" />
+                      <span className="font-medium">Gender:</span>
+                    </div>
+                    <p className="text-gray-800 capitalize">
+                      {authUser?.user?.gender || "Not specified"}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
