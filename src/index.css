@@ -29,3 +29,13 @@
   transition: all 0.3s ease-in-out;
 }
 
+/* Smooth tab transitions */
+.tab-transition {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Focus styles for accessibility */
+.tab-focus:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
