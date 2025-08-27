@@ -4,15 +4,20 @@ import InputField from "../components/ui/InputField";
 import Button from "../components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { useLoginUserMutation } from "../Redux/queries/user/authApi";
+import {
+  useLoginUserMutation,
+  useLoginWithGoogleMutation,
+} from "../Redux/queries/user/authApi";
 import { useDispatch } from "react-redux";
 import { setAuthUser } from "../Redux/reduxSlices/userSlice";
 import { FaUserCircle, FaEnvelope, FaLock, FaSpinner } from "react-icons/fa";
 import Logo from "../assets/e-learning-logo.png";
+import { GoogleLogin } from "@react-oauth/google";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [loginUser] = useLoginUserMutation();
+  const [loginWithGoogle] = useLoginWithGoogleMutation();
   const dispatch = useDispatch();
 
   const initialValues = {
@@ -46,6 +51,29 @@ const LoginPage = () => {
     }
   };
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const token = credentialResponse?.credential;
+      if (!token) {
+        throw new Error("No token received from Google");
+      }
+
+      const response = await loginWithGoogle({ token }).unwrap();
+
+      toast.success("Login successful", { duration: 3000 });
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 2000);
+      dispatch(setAuthUser(response.data));
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("authUser", JSON.stringify(response.data.user));
+    } catch (err) {
+      console.error("Login error", err);
+      const errorMessage = err.data?.message || "Login failed";
+      toast.error(errorMessage, { duration: 3000 });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden md:max-w-2xl">
@@ -59,7 +87,7 @@ const LoginPage = () => {
                 <p className="text-indigo-100">
                   Continue your journey with us.
                 </p>
-                 <div className="mt-4">
+                <div className="mt-4">
                   <div className="w-24 h-24 mx-auto bg-white bg-opacity-20 rounded-full flex items-center justify-center">
                     <img
                       src={Logo}
@@ -80,6 +108,10 @@ const LoginPage = () => {
             <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
               Login to Your Account
             </h1>
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => toast.error("Google login failed")}
+            />
 
             <Formik
               initialValues={initialValues}

@@ -21,6 +21,17 @@ export const authApi = injectApiEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+
+     loginWithGoogle: builder.mutation({
+      query: (body) => ({
+        url: appendUrl("google-login"),
+        method: "post",
+        body,
+        // auth: true,
+      }),
+      invalidatesTags: ["User"],
+    }),
+    
     getOtherUsers: builder.query({
       query: (id) => {
       
@@ -56,6 +67,7 @@ export const authApi = injectApiEndpoints({
 export const {
   useRegisterUserMutation,
   useLoginUserMutation,
+  useLoginWithGoogleMutation,
   useGetOtherUsersQuery,
   useUpdateUserMutation,
   useResetPasswordMutation,
