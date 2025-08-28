@@ -53,6 +53,17 @@ export const authApi = injectApiEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+
+     forgotPassword: builder.mutation({
+      query: (body) => ({
+        url: appendUrl("forgot-password"),
+        method: "post",
+        body,
+        auth: true,
+      }),
+    }),
+
+
        resetPassword: builder.mutation({
       query: (body) => ({
         url: appendUrl("change-password"),
@@ -71,4 +82,5 @@ export const {
   useGetOtherUsersQuery,
   useUpdateUserMutation,
   useResetPasswordMutation,
+  useForgotPasswordMutation,
 } = authApi;

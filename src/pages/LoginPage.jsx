@@ -13,9 +13,12 @@ import { setAuthUser } from "../Redux/reduxSlices/userSlice";
 import { FaUserCircle, FaEnvelope, FaLock, FaSpinner } from "react-icons/fa";
 import Logo from "../assets/e-learning-logo.png";
 import { GoogleLogin } from "@react-oauth/google";
+import { useState } from "react";
+import ForgotPasswordModal from "../components/ui/ForgotPasswordModal";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [loginUser] = useLoginUserMutation();
   const [loginWithGoogle] = useLoginWithGoogleMutation();
   const dispatch = useDispatch();
@@ -139,8 +142,8 @@ const LoginPage = () => {
                   <div className="flex items-center justify-between">
                     <div className="text-sm">
                       <a
-                        href="/forgot-password"
-                        className="font-medium text-indigo-600 hover:text-indigo-500"
+                        onClick={() => setIsForgotPasswordOpen(true)}
+                        className="font-medium text-indigo-600 hover:text-indigo-500 hover:cursor-pointer"
                       >
                         Forgot password?
                       </a>
@@ -188,6 +191,10 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
+      <ForgotPasswordModal
+        isOpen={isForgotPasswordOpen}
+        onClose={() => setIsForgotPasswordOpen(false)}
+      />
     </div>
   );
 };
