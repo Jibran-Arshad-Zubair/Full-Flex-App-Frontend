@@ -16,7 +16,7 @@ import {
 } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import defaultLoginProfile from "../assets/loginUserProfile.png";
-import { useResetPasswordMutation } from "../Redux/queries/user/authApi";
+import { useResetPasswordMutation, useUpdateUserMutation } from "../Redux/queries/user/authApi";
 import toast from "react-hot-toast";
 
 const SettingsPage = () => {
@@ -27,7 +27,7 @@ const SettingsPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const authUser = useSelector((state) => state.user.authUser);
-
+ const [updateUser] = useUpdateUserMutation();
   const [resetPassword] = useResetPasswordMutation();
 
   const toggleSidebar = () => {
@@ -40,6 +40,7 @@ const SettingsPage = () => {
     email: authUser?.user?.email || "",
     phoneNumber: authUser?.user?.phoneNumber || "",
     gender: authUser?.user?.gender || "male",
+
   };
 
   const passwordInitialValues = {
@@ -50,9 +51,19 @@ const SettingsPage = () => {
 
   const handleProfileSubmit = async (values, { setSubmitting }) => {
     try {
-      console.log("Profile updated:", values);
+     const res = await updateUser({
+        _id: authUser?.user?._id,
+        fullName: values.fullName,
+        userName: values.userName,
+        phoneNumber: values.phoneNumber,
+        gender: values.gender,
+        // profilePhoto: authUser?.user?.profilePhoto,
+      }).unwrap();
+      console.log("Profile updated", res);
+      toast.success("Profile updated successfully!");
     } catch (error) {
-      console.error("Error updating profile:", error);
+      console.error("Error while updating profile", error);
+      toast.error(error?.data?.message || "Failed to update profile");
     } finally {
       setSubmitting(false);
     }
