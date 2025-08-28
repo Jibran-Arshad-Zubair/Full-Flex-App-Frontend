@@ -185,8 +185,8 @@ const EditProfileTab = ({ initialValues, onSubmit, authUser }) => (
               src={
                 values.profilePhoto
                   ? values.profilePhoto instanceof File
-                    ? URL.createObjectURL(values.profilePhoto) // New file selected
-                    : values.profilePhoto // Already a URL string
+                    ? URL.createObjectURL(values.profilePhoto)
+                    : values.profilePhoto 
                   : authUser?.user?.profilePhoto || defaultLoginProfile
               }
               alt="Profile"
