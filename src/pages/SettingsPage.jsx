@@ -16,7 +16,10 @@ import {
 } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import defaultLoginProfile from "../assets/loginUserProfile.png";
-import { useResetPasswordMutation, useUpdateUserMutation } from "../Redux/queries/user/authApi";
+import {
+  useResetPasswordMutation,
+  useUpdateUserMutation,
+} from "../Redux/queries/user/authApi";
 import toast from "react-hot-toast";
 
 const SettingsPage = () => {
@@ -27,7 +30,8 @@ const SettingsPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const authUser = useSelector((state) => state.user.authUser);
- const [updateUser] = useUpdateUserMutation();
+  console.log("Profile", authUser?.user?.profilePhoto);
+  const [updateUser] = useUpdateUserMutation();
   const [resetPassword] = useResetPasswordMutation();
 
   const toggleSidebar = () => {
@@ -40,7 +44,7 @@ const SettingsPage = () => {
     email: authUser?.user?.email || "",
     phoneNumber: authUser?.user?.phoneNumber || "",
     gender: authUser?.user?.gender || "male",
-
+    profilePhoto: authUser?.user?.profilePhoto || null,
   };
 
   const passwordInitialValues = {
@@ -51,18 +55,25 @@ const SettingsPage = () => {
 
   const handleProfileSubmit = async (values, { setSubmitting }) => {
     try {
-     const res = await updateUser({
-        _id: authUser?.user?._id,
-        fullName: values.fullName,
-        userName: values.userName,
-        phoneNumber: values.phoneNumber,
-        gender: values.gender,
-        // profilePhoto: authUser?.user?.profilePhoto,
+      const formData = new FormData();
+
+      formData.append("fullName", values.fullName);
+      formData.append("userName", values.userName);
+      formData.append("phoneNumber", values.phoneNumber);
+      formData.append("gender", values.gender);
+
+      if (values.profilePhoto) {
+        formData.append("profilePhoto", values.profilePhoto);
+      }
+
+      const res = await updateUser({
+        id: authUser?.user?._id,
+        formData,
       }).unwrap();
-      console.log("Profile updated", res);
+
       toast.success("Profile updated successfully!");
+      console.log("Profile update response", res);
     } catch (error) {
-      console.error("Error while updating profile", error);
       toast.error(error?.data?.message || "Failed to update profile");
     } finally {
       setSubmitting(false);
@@ -164,51 +175,59 @@ const SettingsPage = () => {
 };
 
 const EditProfileTab = ({ initialValues, onSubmit, authUser }) => (
-  <div className="flex flex-col lg:flex-row gap-8">
-    <div className="w-full lg:w-1/3 flex flex-col items-center">
-      <div className="relative group mb-4">
-        <img
-          className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white dark:border-gray-800 shadow-lg object-cover"
-          src={authUser?.user?.profilePhoto || defaultLoginProfile}
-          alt="Profile"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = defaultLoginProfile;
-          }}
-        />
-        <label className="absolute bottom-2 right-2 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 transition-colors shadow-md">
-          <FiEdit2 className="w-4 h-4 md:w-5 md:h-5" />
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={() => {}}
-          />
-        </label>
-      </div>
+  <Formik initialValues={initialValues} onSubmit={onSubmit}>
+    {({ isSubmitting, setFieldValue, values }) => (
+      <div className="flex flex-col lg:flex-row gap-8">
+        <div className="w-full lg:w-1/3 flex flex-col items-center">
+          <div className="relative group mb-4">
+            <img
+              className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white dark:border-gray-800 shadow-lg object-cover"
+              src={
+                values.profilePhoto
+                  ? URL.createObjectURL(values.profilePhoto)
+                  : authUser?.user?.profilePhoto || defaultLoginProfile
+              }
+              alt="Profile"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = defaultLoginProfile;
+              }}
+            />
+            <label className="absolute bottom-2 right-2 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 transition-colors shadow-md">
+              <FiEdit2 className="w-4 h-4 md:w-5 md:h-5" />
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    setFieldValue("profilePhoto", e.target.files[0]);
+                  }
+                }}
+              />
+            </label>
+          </div>
 
-      <div className="text-center">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-          {authUser?.user?.fullName}
-        </h2>
-        <p className="text-gray-500 dark:text-gray-400 mb-2">
-          @{authUser?.user?.userName}
-        </p>
-        <span
-          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-            authUser?.user?.status === "active"
-              ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-              : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-          }`}
-        >
-          {authUser?.user?.status === "active" ? "Active" : "Inactive"}
-        </span>
-      </div>
-    </div>
+          <div className="text-center">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+              {authUser?.user?.fullName}
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400 mb-2">
+              @{authUser?.user?.userName}
+            </p>
+            <span
+              className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                authUser?.user?.status === "active"
+                  ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                  : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+              }`}
+            >
+              {authUser?.user?.status === "active" ? "Active" : "Inactive"}
+            </span>
+          </div>
+        </div>
 
-    <div className="w-full lg:w-2/3">
-      <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        {({ isSubmitting }) => (
+        <div className="w-full lg:w-2/3">
           <Form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <InputField
@@ -262,10 +281,10 @@ const EditProfileTab = ({ initialValues, onSubmit, authUser }) => (
               </Button>
             </div>
           </Form>
-        )}
-      </Formik>
-    </div>
-  </div>
+        </div>
+      </div>
+    )}
+  </Formik>
 );
 
 const ChangePasswordTab = ({

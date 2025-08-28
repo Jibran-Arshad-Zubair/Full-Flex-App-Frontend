@@ -22,7 +22,7 @@ export const authApi = injectApiEndpoints({
       invalidatesTags: ["User"],
     }),
 
-     loginWithGoogle: builder.mutation({
+    loginWithGoogle: builder.mutation({
       query: (body) => ({
         url: appendUrl("google-login"),
         method: "post",
@@ -31,10 +31,9 @@ export const authApi = injectApiEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
-    
+
     getOtherUsers: builder.query({
       query: (id) => {
-      
         return {
           url: appendUrl(`get-other-users/${id}`),
           method: "get",
@@ -46,15 +45,15 @@ export const authApi = injectApiEndpoints({
       providesTags: ["User"],
     }),
     updateUser: builder.mutation({
-      query: (userData) => ({
-        url: appendUrl(`update/${userData._id}`),
+      query: ({ id, formData }) => ({
+        url: appendUrl(`update/${id}`), 
         method: "put",
-        body: userData,
+        body: formData,
       }),
       invalidatesTags: ["User"],
     }),
 
-     forgotPassword: builder.mutation({
+    forgotPassword: builder.mutation({
       query: (body) => ({
         url: appendUrl("forgot-password"),
         method: "post",
@@ -63,8 +62,7 @@ export const authApi = injectApiEndpoints({
       }),
     }),
 
-
-       resetPassword: builder.mutation({
+    resetPassword: builder.mutation({
       query: (body) => ({
         url: appendUrl("change-password"),
         method: "put",
