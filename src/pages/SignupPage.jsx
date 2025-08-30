@@ -31,7 +31,11 @@ const SignupPage = () => {
       .required("Username is required"),
     password: Yup.string()
       .min(6, "Password must be at least 6 characters")
-      .required("Password is required"),
+      .required("Password is required")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+      ),
     fullName: Yup.string()
       .min(3, "Full name must be at least 3 characters")
       .required("Full name is required"),

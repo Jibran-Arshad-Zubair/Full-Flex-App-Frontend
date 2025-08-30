@@ -13,14 +13,13 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
   const [forgotPassword, { isLoading }] = useForgetPasswordMutation();
   const [sendOTP, { isLoading: isOTPLoading }] = useSendOTPMutation();
 
-  // Step 1: Email validation schema
+
   const emailValidationSchema = Yup.object({
     email: Yup.string()
       .email('Please enter a valid email address')
       .required('Email is required')
   });
 
-  // Step 2: OTP and password validation schema
   const resetValidationSchema = Yup.object({
     otp: Yup.string()
       .required('OTP is required')
@@ -37,7 +36,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
       .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')
   });
 
-  // Handle email submission
+
   const handleEmailSubmit = async (values, { setSubmitting, setFieldError }) => {
     try {
       const response = await sendOTP({ email: values.email }).unwrap();
@@ -59,7 +58,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
     }
   };
 
-  // Handle OTP and password submission
+
   const handleResetSubmit = async (values, { setSubmitting, setFieldError }) => {
     try {
       const resetData = {
@@ -92,7 +91,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
     }
   };
 
-  // Handle resend OTP
+
   const handleResendOTP = async () => {
     try {
       const response = await sendOTP({ email }).unwrap();
@@ -119,7 +118,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        {/* Background overlay */}
+       
         <div 
           className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75 backdrop-blur-sm"
           onClick={handleClose}
@@ -127,9 +126,9 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
 
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
 
-        {/* Modal panel */}
+      
         <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
-          {/* Header */}
+       
           <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -144,7 +143,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Content */}
+       
           <div className="px-6 py-6">
             {step === 1 ? (
               <Formik
@@ -208,7 +207,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                       </p>
                     </div>
 
-                    {/* OTP Field */}
+                  
                     <div>
                       <label htmlFor="otp" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         OTP Code
@@ -224,7 +223,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                       )}
                     </div>
 
-                    {/* Resend OTP Link */}
+               
                     <div className="text-right">
                       <button
                         type="button"
@@ -237,7 +236,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                       </button>
                     </div>
 
-                    {/* New Password Field */}
+                 
                     <InputField
                       label="New Password"
                       name="newPassword"
@@ -246,7 +245,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                       icon={<FiLock className="text-gray-400" />}
                     />
 
-                    {/* Confirm Password Field */}
+                 
                     <InputField
                       label="Confirm Password"
                       name="confirmPassword"
@@ -275,7 +274,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
             )}
           </div>
 
-          {/* Footer */}
+
           <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
             <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
               Remember your password?{' '}
