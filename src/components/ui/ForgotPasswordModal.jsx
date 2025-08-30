@@ -1,47 +1,116 @@
 import React, { useState } from 'react';
-import { Formik, Form } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import InputField from './InputField';
 import Button from './Button';
-import { FiX, FiMail, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
-import { useForgotPasswordMutation } from '../../Redux/queries/user/authApi';
+import { FiX, FiMail, FiLock, FiRefreshCw } from 'react-icons/fi';
+import { useForgetPasswordMutation, useSendOTPMutation } from '../../Redux/queries/user/authApi';
 import toast from 'react-hot-toast';
 
 const ForgotPasswordModal = ({ isOpen, onClose }) => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
+  const [step, setStep] = useState(1);
+  const [email, setEmail] = useState('');
+  const [forgotPassword, { isLoading }] = useForgetPasswordMutation();
+  const [sendOTP, { isLoading: isOTPLoading }] = useSendOTPMutation();
 
-  const initialValues = {
-    email: ''
-  };
-
-  const validationSchema = Yup.object({
+  // Step 1: Email validation schema
+  const emailValidationSchema = Yup.object({
     email: Yup.string()
       .email('Please enter a valid email address')
       .required('Email is required')
   });
 
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+  // Step 2: OTP and password validation schema
+  const resetValidationSchema = Yup.object({
+    otp: Yup.string()
+      .required('OTP is required')
+      .length(6, 'OTP must be 6 digits'),
+    newPassword: Yup.string()
+      .min(8, 'Password must be at least 8 characters')
+      .required('New password is required')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+      ),
+    confirmPassword: Yup.string()
+      .required('Please confirm your password')
+      .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')
+  });
+
+  // Handle email submission
+  const handleEmailSubmit = async (values, { setSubmitting, setFieldError }) => {
     try {
-      const response = await forgotPassword(values).unwrap();
+      const response = await sendOTP({ email: values.email }).unwrap();
       
       if (response.success) {
-        setIsSubmitted(true);
-        resetForm();
-        toast.success(response.message || 'Password reset email sent successfully!');
+        setEmail(values.email);
+        setStep(2);
+        toast.success('OTP sent to your email successfully!');
       } else {
-        throw new Error(response.message || 'Failed to send reset email');
+        throw new Error(response.message || 'Failed to send OTP');
       }
     } catch (error) {
       console.error('Error:', error);
-      toast.error(error.data?.message || error.message || 'Something went wrong. Please try again.');
+      const errorMsg = error.data?.message || error.message || 'Something went wrong. Please try again.';
+      setFieldError('email', errorMsg);
+      toast.error(errorMsg);
     } finally {
       setSubmitting(false);
     }
   };
 
+  // Handle OTP and password submission
+  const handleResetSubmit = async (values, { setSubmitting, setFieldError }) => {
+    try {
+      const resetData = {
+        email,
+        otp: values.otp,
+        newPassword: values.newPassword
+      };
+      
+      const response = await forgotPassword(resetData).unwrap();
+      
+      if (response.success) {
+        toast.success('Password reset successfully!');
+        onClose();
+      } else {
+        throw new Error(response.message || 'Failed to reset password');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      const errorMsg = error.data?.message || error.message || 'Something went wrong. Please try again.';
+      
+      if (errorMsg.toLowerCase().includes('otp')) {
+        setFieldError('otp', errorMsg);
+      } else {
+        setFieldError('confirmPassword', errorMsg);
+      }
+      
+      toast.error(errorMsg);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // Handle resend OTP
+  const handleResendOTP = async () => {
+    try {
+      const response = await sendOTP({ email }).unwrap();
+      
+      if (response.success) {
+        toast.success('New OTP sent to your email!');
+      } else {
+        throw new Error(response.message || 'Failed to resend OTP');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error(error.data?.message || error.message || 'Failed to resend OTP. Please try again.');
+    }
+  };
+
   const handleClose = () => {
-    setIsSubmitted(false);
+    setStep(1);
+    setEmail('');
     onClose();
   };
 
@@ -64,7 +133,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
           <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {isSubmitted ? 'Check Your Email' : 'Reset Your Password'}
+                {step === 1 ? 'Reset Your Password' : 'Create New Password'}
               </h3>
               <button
                 onClick={handleClose}
@@ -77,13 +146,11 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
 
           {/* Content */}
           <div className="px-6 py-6">
-            {isSubmitted ? (
-              <SuccessMessage onClose={handleClose} />
-            ) : (
+            {step === 1 ? (
               <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={handleSubmit}
+                initialValues={{ email: '' }}
+                validationSchema={emailValidationSchema}
+                onSubmit={handleEmailSubmit}
               >
                 {({ isSubmitting }) => (
                   <Form className="space-y-6">
@@ -95,7 +162,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                         Forgot your password?
                       </h4>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Enter your email address and we'll send you a link to reset your password.
+                        Enter your email address and we'll send you an OTP to reset your password.
                       </p>
                     </div>
 
@@ -109,16 +176,97 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
 
                     <Button
                       type="submit"
-                      disabled={isSubmitting || isLoading}
+                      disabled={isSubmitting || isOTPLoading}
                       className="w-full bg-blue-600 hover:bg-blue-700 py-3 text-base font-medium"
+                    >
+                      {isOTPLoading ? (
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                          Sending OTP...
+                        </div>
+                      ) : (
+                        'Send OTP'
+                      )}
+                    </Button>
+                  </Form>
+                )}
+              </Formik>
+            ) : (
+              <Formik
+                initialValues={{ otp: '', newPassword: '', confirmPassword: '' }}
+                validationSchema={resetValidationSchema}
+                onSubmit={handleResetSubmit}
+              >
+                {({ isSubmitting, errors, touched }) => (
+                  <Form className="space-y-4">
+                    <div className="text-center mb-4">
+                      <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                        Verify Your Identity
+                      </h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Enter the OTP sent to {email} and your new password.
+                      </p>
+                    </div>
+
+                    {/* OTP Field */}
+                    <div>
+                      <label htmlFor="otp" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        OTP Code
+                      </label>
+                      <Field
+                        name="otp"
+                        type="text"
+                        placeholder="Enter 6-digit OTP"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                      />
+                      {errors.otp && touched.otp && (
+                        <div className="mt-1 text-sm text-red-600">{errors.otp}</div>
+                      )}
+                    </div>
+
+                    {/* Resend OTP Link */}
+                    <div className="text-right">
+                      <button
+                        type="button"
+                        onClick={handleResendOTP}
+                        disabled={isOTPLoading}
+                        className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center justify-end"
+                      >
+                        <FiRefreshCw className={`mr-1 ${isOTPLoading ? 'animate-spin' : ''}`} />
+                        {isOTPLoading ? 'Resending OTP...' : 'Resend OTP'}
+                      </button>
+                    </div>
+
+                    {/* New Password Field */}
+                    <InputField
+                      label="New Password"
+                      name="newPassword"
+                      type="password"
+                      placeholder="Enter new password"
+                      icon={<FiLock className="text-gray-400" />}
+                    />
+
+                    {/* Confirm Password Field */}
+                    <InputField
+                      label="Confirm Password"
+                      name="confirmPassword"
+                      type="password"
+                      placeholder="Confirm your password"
+                      icon={<FiLock className="text-gray-400" />}
+                    />
+
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting || isLoading}
+                      className="w-full bg-blue-600 hover:bg-blue-700 py-3 text-base font-medium mt-2"
                     >
                       {isLoading ? (
                         <div className="flex items-center justify-center">
                           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                          Sending...
+                          Resetting Password...
                         </div>
                       ) : (
-                        'Send Reset Link'
+                        'Reset Password'
                       )}
                     </Button>
                   </Form>
@@ -128,56 +276,22 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
           </div>
 
           {/* Footer */}
-          {!isSubmitted && (
-            <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
-              <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
-                <FiAlertCircle className="inline mr-1 h-3 w-3" />
-                Remember your password?{' '}
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
-                >
-                  Back to login
-                </button>
-              </p>
-            </div>
-          )}
+          <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
+            <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
+              Remember your password?{' '}
+              <button
+                type="button"
+                onClick={handleClose}
+                className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+              >
+                Back to login
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     </div>
   );
 };
-
-// Success Message Component
-const SuccessMessage = ({ onClose }) => (
-  <div className="text-center py-6">
-    <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 dark:bg-green-900/30 mb-4">
-      <FiCheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
-    </div>
-    
-    <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-      Check Your Email
-    </h4>
-    
-    <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-      We've sent a password reset link to your email address. 
-      The link will expire in 1 hour for security reasons.
-    </p>
-
-    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-6">
-      <p className="text-xs text-blue-800 dark:text-blue-200">
-        💡 <strong>Tip:</strong> Check your spam folder if you don't see the email within a few minutes.
-      </p>
-    </div>
-
-    <Button
-      onClick={onClose}
-      className="w-full bg-blue-600 hover:bg-blue-700 py-3"
-    >
-      Return to Login
-    </Button>
-  </div>
-);
 
 export default ForgotPasswordModal;

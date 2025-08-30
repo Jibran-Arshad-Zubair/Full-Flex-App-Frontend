@@ -42,9 +42,7 @@ const Sidebar = ({ isOpen }) => {
       } sm:translate-x-0`}
       aria-label="Sidebar"
     >
-     
-      <div className="absolute top-20 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"></div>
-      
+    
       <div className="h-full px-4 pb-4 overflow-y-auto">
         <nav className="space-y-2 mt-4">
           {menuItems.map((item, index) => {
