@@ -61,7 +61,7 @@ const SignupPage = () => {
         navigate("/");
       }, 2000);
     } catch (err) {
-      console.error("errorrrrr", err);
+     
       const errorMessage = err.data?.message || "Registration failed";
 
       toast.error(errorMessage, {

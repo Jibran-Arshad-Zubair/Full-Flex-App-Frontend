@@ -3,7 +3,7 @@ import axios from "axios";
 // const baesURL = process.env.REACT_APP_BASE_URL;
 const baesURL = import.meta.env.VITE_API_URL;
 
-// console.log("🚀 ~ baesURL:", baesURL);
+// console.log(" ~ baesURL:", baesURL);
 
 const axiosInstance = axios.create({
   baseURL: `${baesURL}/v1`,
