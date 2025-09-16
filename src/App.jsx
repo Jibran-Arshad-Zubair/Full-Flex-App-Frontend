@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { socket } from "./utils/socket";
 import { setSocket } from "./Redux/reduxSlices/socketSlice";
 import { setOnlineUsers } from "./Redux/reduxSlices/userSlice";
+import ChatBot from "./components/aiChatBot/ChatBot";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -41,6 +42,7 @@ export default function App() {
       <Elements stripe={stripePromise}>
         <div className="min-h-screen bg-gray-100">
           <AppRoutes />
+           <ChatBot />
         </div>
       </Elements>
     </BrowserRouter>
