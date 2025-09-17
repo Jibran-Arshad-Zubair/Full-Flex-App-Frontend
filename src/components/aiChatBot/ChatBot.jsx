@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Bot, User, X, Loader2, Paperclip } from "lucide-react";
+import { Send, Bot, User, X, Loader2, Paperclip, Move } from "lucide-react";
 import { useAskChatBotMutation } from "../../Redux/queries/chatBot/chatBotApi";
 
 const MessageRenderer = ({ content }) => {
@@ -42,7 +42,18 @@ const ChatBot = () => {
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedText, setUploadedText] = useState("");
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [iconPosition, setIconPosition] = useState({
+    x: window.innerWidth - 100,
+    y: window.innerHeight - 100,
+  });
+  const [isIconDragging, setIsIconDragging] = useState(false);
+  const [iconDragOffset, setIconDragOffset] = useState({ x: 0, y: 0 });
+
   const messagesEndRef = useRef(null);
+  const chatWindowRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -52,54 +63,151 @@ const ChatBot = () => {
     scrollToBottom();
   }, [messages]);
 
-  
+  useEffect(() => {
+    if (isOpen) {
+      // Center the chat window on first open
+      setPosition({
+        x: window.innerWidth / 2 - 200,
+        y: window.innerHeight / 2 - 300,
+      });
+    }
+  }, [isOpen]);
+
+  const handleDragStart = (e) => {
+    if (!chatWindowRef.current) return;
+
+    const rect = chatWindowRef.current.getBoundingClientRect();
+    setIsDragging(true);
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+
+    e.preventDefault();
+  };
+  const handleDrag = (e) => {
+    if (!isDragging) return;
+
+    const newX = e.clientX - dragOffset.x;
+    const newY = e.clientY - dragOffset.y;
+    const maxX = window.innerWidth - (chatWindowRef.current?.offsetWidth || 450);
+    const maxY = window.innerHeight - (chatWindowRef.current?.offsetHeight || 600);
+
+    setPosition({
+      x: Math.max(0, Math.min(newX, maxX)),
+      y: Math.max(0, Math.min(newY, maxY)),
+    });
+  };
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener("mousemove", handleDrag);
+      document.addEventListener("mouseup", handleDragEnd);
+      document.body.style.cursor = "grabbing";
+      document.body.style.userSelect = "none";
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleDrag);
+      document.removeEventListener("mouseup", handleDragEnd);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+  }, [isDragging, dragOffset]);
+
   const extractTextFromPDF = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      
+
       reader.onload = async (e) => {
         try {
           const arrayBuffer = e.target.result;
-          
-         
-          const pdfjsLib = await import('pdfjs-dist');
-          
-         
+
+          const pdfjsLib = await import("pdfjs-dist");
+
           pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-            'pdfjs-dist/build/pdf.worker.min.mjs',
+            "pdfjs-dist/build/pdf.worker.min.mjs",
             import.meta.url
           ).toString();
 
           const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
           let textContent = "";
-          
+
           for (let i = 1; i <= pdf.numPages; i++) {
             const page = await pdf.getPage(i);
             const text = await page.getTextContent();
             text.items.forEach((item) => {
               textContent += item.str + " ";
             });
-            textContent += "\n"; 
+            textContent += "\n";
           }
-          
+
           resolve(textContent);
         } catch (error) {
           reject(error);
         }
       };
-      
+
       reader.onerror = () => reject(new Error("Failed to read file"));
       reader.readAsArrayBuffer(file);
     });
   };
 
+  // Handle icon drag start
+  const handleIconDragStart = (e) => {
+    setIsIconDragging(true);
+    setIconDragOffset({
+      x: e.clientX - iconPosition.x,
+      y: e.clientY - iconPosition.y,
+    });
+    e.preventDefault();
+  };
+
+  // Handle icon drag movement
+  const handleIconDrag = (e) => {
+    if (!isIconDragging) return;
+
+    const newX = e.clientX - iconDragOffset.x;
+    const newY = e.clientY - iconDragOffset.y;
+
+    // Keep within window bounds
+    const maxX = window.innerWidth - 64; // icon width
+    const maxY = window.innerHeight - 64; // icon height
+
+    setIconPosition({
+      x: Math.max(0, Math.min(newX, maxX)),
+      y: Math.max(0, Math.min(newY, maxY)),
+    });
+  };
+
+  // Handle icon drag end
+  const handleIconDragEnd = () => {
+    setIsIconDragging(false);
+  };
+
+  // Add event listeners for icon dragging
+  useEffect(() => {
+    if (isIconDragging) {
+      document.addEventListener("mousemove", handleIconDrag);
+      document.addEventListener("mouseup", handleIconDragEnd);
+      document.body.style.cursor = "grabbing";
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleIconDrag);
+      document.removeEventListener("mouseup", handleIconDragEnd);
+      document.body.style.cursor = "";
+    };
+  }, [isIconDragging, iconDragOffset]);
+
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    e.target.value = '';
-    
+    e.target.value = "";
+
     try {
-     
       setMessages((prev) => [
         ...prev,
         {
@@ -126,11 +234,11 @@ const ChatBot = () => {
       console.error("File processing error:", err);
       setMessages((prev) => [
         ...prev,
-        { 
-          id: Date.now(), 
-          text: "Failed to process the file. Please make sure it's a valid PDF or text file.", 
-          sender: "bot", 
-          timestamp: new Date() 
+        {
+          id: Date.now(),
+          text: "Failed to process the file. Please make sure it's a valid PDF or text file.",
+          sender: "bot",
+          timestamp: new Date(),
         },
       ]);
     }
@@ -222,8 +330,14 @@ const ChatBot = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center justify-center group z-50"
+          onMouseDown={handleIconDragStart}
+          className="fixed w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center justify-center group z-50 cursor-move"
           aria-label="Open chat"
+          style={{
+            left: `${iconPosition.x}px`,
+            top: `${iconPosition.y}px`,
+            cursor: isIconDragging ? "grabbing" : "move",
+          }}
         >
           <Bot className="w-8 h-8" />
           <span className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-xs rounded-full flex items-center justify-center animate-pulse">
@@ -233,8 +347,21 @@ const ChatBot = () => {
       )}
 
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-96 h-96 md:w-[450px] md:h-[600px] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col z-50">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
+        <div
+          ref={chatWindowRef}
+          className="fixed w-96 h-96 md:w-[450px] md:h-[600px] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col z-50"
+          style={{
+            left: `${position.x}px`,
+            top: `${position.y}px`,
+          }}
+        >
+          <div
+            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-t-2xl flex items-center justify-between cursor-move"
+            onMouseDown={handleDragStart}
+            style={{
+              cursor: isDragging ? "grabbing" : "move",
+            }}
+          >
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                 <Bot className="w-6 h-6" />
@@ -244,13 +371,16 @@ const ChatBot = () => {
                 <p className="text-xs opacity-90">Online • Ready to help</p>
               </div>
             </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="p-1 hover:bg-white/20 rounded-full transition-colors"
-              aria-label="Close chat"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center space-x-2">
+              {/* <Move className="w-4 h-4 opacity-70" /> */}
+              <button
+                onClick={() => setIsOpen(false)}
+                className="p-1 hover:bg-white/20 rounded-full transition-colors"
+                aria-label="Close chat"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900">
@@ -313,7 +443,6 @@ const ChatBot = () => {
 
           <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <div className="flex space-x-2 items-center">
-             
               <label className="cursor-pointer p-3 bg-gray-200 dark:bg-gray-700 rounded-2xl hover:bg-gray-300 dark:hover:bg-gray-600 transition-all flex items-center justify-center">
                 <Paperclip className="w-4 h-4" />
                 <input
@@ -325,7 +454,6 @@ const ChatBot = () => {
                 />
               </label>
 
-            
               <input
                 type="text"
                 value={inputText}
@@ -336,7 +464,6 @@ const ChatBot = () => {
                 disabled={isLoading}
               />
 
-           
               <button
                 onClick={handleSendMessage}
                 disabled={!inputText.trim() || isLoading}
@@ -346,7 +473,7 @@ const ChatBot = () => {
                 <Send className="w-5 h-5" />
               </button>
             </div>
-            
+
             {uploadedText && (
               <div className="mt-2 text-xs text-gray-500">
                 📄 Document loaded: {uploadedText.length} characters extracted
