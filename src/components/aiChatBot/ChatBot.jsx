@@ -1,23 +1,25 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Bot, User, X, Loader2 } from "lucide-react";
+import { Send, Bot, User, X, Loader2, Paperclip } from "lucide-react";
 import { useAskChatBotMutation } from "../../Redux/queries/chatBot/chatBotApi";
 
-
 const MessageRenderer = ({ content }) => {
-  if (typeof content !== 'string' || !content.trim()) {
+  if (typeof content !== "string" || !content.trim()) {
     return <p className="text-red-500 text-sm">Invalid message content</p>;
   }
-  
-  const paragraphs = content.split('\n').filter(p => p.trim());
-  
+
+  const paragraphs = content.split("\n").filter((p) => p.trim());
+
   if (paragraphs.length === 0) {
     return <p className="text-red-500 text-sm">Empty message</p>;
   }
-  
+
   return (
     <div className="message-content">
       {paragraphs.map((paragraph, index) => (
-        <p key={index} className="mb-2 last:mb-0">
+        <p
+          key={index}
+          className="mb-2 last:mb-0"
+        >
           {paragraph}
         </p>
       ))}
@@ -28,7 +30,6 @@ const MessageRenderer = ({ content }) => {
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [askChatBot] = useAskChatBotMutation();
-
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -40,6 +41,7 @@ const ChatBot = () => {
 
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [uploadedText, setUploadedText] = useState("");
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -49,6 +51,90 @@ const ChatBot = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  
+  const extractTextFromPDF = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      
+      reader.onload = async (e) => {
+        try {
+          const arrayBuffer = e.target.result;
+          
+         
+          const pdfjsLib = await import('pdfjs-dist');
+          
+         
+          pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+            'pdfjs-dist/build/pdf.worker.min.mjs',
+            import.meta.url
+          ).toString();
+
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          let textContent = "";
+          
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const text = await page.getTextContent();
+            text.items.forEach((item) => {
+              textContent += item.str + " ";
+            });
+            textContent += "\n"; 
+          }
+          
+          resolve(textContent);
+        } catch (error) {
+          reject(error);
+        }
+      };
+      
+      reader.onerror = () => reject(new Error("Failed to read file"));
+      reader.readAsArrayBuffer(file);
+    });
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    e.target.value = '';
+    
+    try {
+     
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          text: "📄 Uploading and processing your file...",
+          sender: "bot",
+          timestamp: new Date(),
+        },
+      ]);
+
+      const text = await extractTextFromPDF(file);
+      setUploadedText(text);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          text: `File uploaded successfully! I've extracted the text content. You can now ask questions about this document.`,
+          sender: "bot",
+          timestamp: new Date(),
+        },
+      ]);
+    } catch (err) {
+      console.error("File processing error:", err);
+      setMessages((prev) => [
+        ...prev,
+        { 
+          id: Date.now(), 
+          text: "Failed to process the file. Please make sure it's a valid PDF or text file.", 
+          sender: "bot", 
+          timestamp: new Date() 
+        },
+      ]);
+    }
+  };
 
   const quickReplies = [
     { text: "📚 Course recommendations", prompt: "Can you recommend courses based on my interests?" },
@@ -72,26 +158,28 @@ const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      const res = await askChatBot(inputText).unwrap();
-    
-      let botText = "⚠️ Sorry, I couldn't process that request.";
-      
-      if (res && typeof res === 'object') {
-        if (res.reply && typeof res.reply === 'string') {
+      const res = await askChatBot({
+        message: inputText,
+        fileText: uploadedText,
+      }).unwrap();
+
+      let botText = "Sorry, I couldn't process that request.";
+
+      if (res && typeof res === "object") {
+        if (res.reply && typeof res.reply === "string") {
           botText = res.reply;
-        } else if (typeof res === 'string') {
+        } else if (typeof res === "string") {
           botText = res;
-        } else if (res.message && typeof res.message === 'string') {
+        } else if (res.message && typeof res.message === "string") {
           botText = res.message;
         } else {
-        
           try {
             botText = JSON.stringify(res);
           } catch {
             botText = "Received an unexpected response format.";
           }
         }
-      } else if (typeof res === 'string') {
+      } else if (typeof res === "string") {
         botText = res;
       }
 
@@ -131,7 +219,6 @@ const ChatBot = () => {
 
   return (
     <>
-  
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -145,10 +232,8 @@ const ChatBot = () => {
         </button>
       )}
 
-     
       {isOpen && (
         <div className="fixed bottom-6 right-6 w-96 h-96 md:w-[450px] md:h-[600px] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col z-50">
-        
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
@@ -168,7 +253,6 @@ const ChatBot = () => {
             </button>
           </div>
 
-
           <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900">
             {messages.map((message) => (
               <div
@@ -183,15 +267,11 @@ const ChatBot = () => {
                   }`}
                 >
                   <div className="flex items-start space-x-2">
-                    {message.sender === "bot" && (
-                      <Bot className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                    )}
+                    {message.sender === "bot" && <Bot className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />}
                     <div className="flex-1">
                       <MessageRenderer content={message.text} />
                     </div>
-                    {message.sender === "user" && (
-                      <User className="w-5 h-5 text-blue-200 flex-shrink-0 mt-0.5" />
-                    )}
+                    {message.sender === "user" && <User className="w-5 h-5 text-blue-200 flex-shrink-0 mt-0.5" />}
                   </div>
                   <p className="text-xs opacity-70 mt-1">
                     {message.timestamp instanceof Date
@@ -232,7 +312,20 @@ const ChatBot = () => {
           )}
 
           <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 items-center">
+             
+              <label className="cursor-pointer p-3 bg-gray-200 dark:bg-gray-700 rounded-2xl hover:bg-gray-300 dark:hover:bg-gray-600 transition-all flex items-center justify-center">
+                <Paperclip className="w-4 h-4" />
+                <input
+                  type="file"
+                  accept=".pdf,.txt,.docx,.doc"
+                  className="hidden"
+                  onChange={handleFileUpload}
+                  disabled={isLoading}
+                />
+              </label>
+
+            
               <input
                 type="text"
                 value={inputText}
@@ -242,6 +335,8 @@ const ChatBot = () => {
                 className="flex-1 px-4 py-3 bg-gray-100 dark:bg-gray-700 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
                 disabled={isLoading}
               />
+
+           
               <button
                 onClick={handleSendMessage}
                 disabled={!inputText.trim() || isLoading}
@@ -251,6 +346,12 @@ const ChatBot = () => {
                 <Send className="w-5 h-5" />
               </button>
             </div>
+            
+            {uploadedText && (
+              <div className="mt-2 text-xs text-gray-500">
+                📄 Document loaded: {uploadedText.length} characters extracted
+              </div>
+            )}
           </div>
         </div>
       )}
