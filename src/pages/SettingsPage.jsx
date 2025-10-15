@@ -30,7 +30,7 @@ const SettingsPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const authUser = useSelector((state) => state.user.authUser);
-  console.log("Profile", authUser?.user?.profilePhoto);
+  
   const [updateUser] = useUpdateUserMutation();
   const [resetPassword] = useResetPasswordMutation();
 
