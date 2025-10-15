@@ -1,18 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Send, Bot, User, X, Loader2, Paperclip, Move } from "lucide-react";
 import { useAskChatBotMutation } from "../../Redux/queries/chatBot/chatBotApi";
-
 const MessageRenderer = ({ content }) => {
   if (typeof content !== "string" || !content.trim()) {
     return <p className="text-red-500 text-sm">Invalid message content</p>;
   }
-
   const paragraphs = content.split("\n").filter((p) => p.trim());
-
   if (paragraphs.length === 0) {
     return <p className="text-red-500 text-sm">Empty message</p>;
   }
-
   return (
     <div className="message-content">
       {paragraphs.map((paragraph, index) => (
@@ -26,7 +22,6 @@ const MessageRenderer = ({ content }) => {
     </div>
   );
 };
-
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [askChatBot] = useAskChatBotMutation();
@@ -38,7 +33,6 @@ const ChatBot = () => {
       timestamp: new Date(),
     },
   ]);
-
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedText, setUploadedText] = useState("");
@@ -58,14 +52,11 @@ const ChatBot = () => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
   useEffect(() => {
     if (isOpen) {
-      // Center the chat window on first open
       setPosition({
         x: window.innerWidth / 2 - 200,
         y: window.innerHeight / 2 - 300,
@@ -75,24 +66,20 @@ const ChatBot = () => {
 
   const handleDragStart = (e) => {
     if (!chatWindowRef.current) return;
-
     const rect = chatWindowRef.current.getBoundingClientRect();
     setIsDragging(true);
     setDragOffset({
       x: e.clientX - rect.left,
       y: e.clientY - rect.top,
     });
-
     e.preventDefault();
   };
   const handleDrag = (e) => {
     if (!isDragging) return;
-
     const newX = e.clientX - dragOffset.x;
     const newY = e.clientY - dragOffset.y;
     const maxX = window.innerWidth - (chatWindowRef.current?.offsetWidth || 450);
     const maxY = window.innerHeight - (chatWindowRef.current?.offsetHeight || 600);
-
     setPosition({
       x: Math.max(0, Math.min(newX, maxX)),
       y: Math.max(0, Math.min(newY, maxY)),
@@ -108,7 +95,6 @@ const ChatBot = () => {
       document.body.style.cursor = "grabbing";
       document.body.style.userSelect = "none";
     }
-
     return () => {
       document.removeEventListener("mousemove", handleDrag);
       document.removeEventListener("mouseup", handleDragEnd);
@@ -116,7 +102,6 @@ const ChatBot = () => {
       document.body.style.userSelect = "";
     };
   }, [isDragging, dragOffset]);
-
   const extractTextFromPDF = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -154,8 +139,6 @@ const ChatBot = () => {
       reader.readAsArrayBuffer(file);
     });
   };
-
-  // Handle icon drag start
   const handleIconDragStart = (e) => {
     setIsIconDragging(true);
     setIconDragOffset({
@@ -164,17 +147,13 @@ const ChatBot = () => {
     });
     e.preventDefault();
   };
-
-  // Handle icon drag movement
   const handleIconDrag = (e) => {
     if (!isIconDragging) return;
 
     const newX = e.clientX - iconDragOffset.x;
     const newY = e.clientY - iconDragOffset.y;
-
-    // Keep within window bounds
-    const maxX = window.innerWidth - 64; // icon width
-    const maxY = window.innerHeight - 64; // icon height
+    const maxX = window.innerWidth - 64; 
+    const maxY = window.innerHeight - 64; 
 
     setIconPosition({
       x: Math.max(0, Math.min(newX, maxX)),
@@ -182,12 +161,10 @@ const ChatBot = () => {
     });
   };
 
-  // Handle icon drag end
   const handleIconDragEnd = () => {
     setIsIconDragging(false);
   };
 
-  // Add event listeners for icon dragging
   useEffect(() => {
     if (isIconDragging) {
       document.addEventListener("mousemove", handleIconDrag);
