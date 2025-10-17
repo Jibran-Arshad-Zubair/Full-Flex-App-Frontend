@@ -3,7 +3,6 @@ import { HiMenu } from "react-icons/hi";
 import Logo from "../../assets/e-learning-logo.png";
 import { FiSearch } from "react-icons/fi";
 import { IoMdNotificationsOutline } from "react-icons/io";
-
 const Navbar = ({ toggleSidebar }) => {
   return (
     <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-100 shadow-sm">

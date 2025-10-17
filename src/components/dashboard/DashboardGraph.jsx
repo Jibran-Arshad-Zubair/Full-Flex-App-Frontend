@@ -14,13 +14,9 @@ const DashboardChart = () => {
       (course) => course.teacher._id === userId
     ) || [];
   }, [allCourses?.data, userId]);
-
-  
   const chartData = useMemo(() => {
     const coursesByMonth = {};
     const now = new Date();
-    
-   
     for (let i = 5; i >= 0; i--) {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const monthKey = date.toLocaleString('default', { month: 'short' });
@@ -48,8 +44,6 @@ const DashboardChart = () => {
 
     return Object.values(coursesByMonth);
   }, [myCourses]);
-
-
   const pieData = useMemo(() => {
     const active = myCourses.filter(c => c.status === 'active').length;
     const pending = myCourses.filter(c => c.status === 'pending').length;
@@ -58,7 +52,6 @@ const DashboardChart = () => {
       { name: 'Pending Courses', value: pending },
     ];
   }, [myCourses]);
-
   const COLORS = ['#4F46E5', '#10B981'];
 
   return (
@@ -90,7 +83,6 @@ const DashboardChart = () => {
         </div>
         <p className="text-sm text-gray-500 mt-1">Last 6 months overview</p>
       </div>
-
       <div className="relative h-[300px] p-4">
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
@@ -158,7 +150,6 @@ const DashboardChart = () => {
           </ResponsiveContainer>
         )}
       </div>
-
       <div className="px-6 py-3 border-t border-gray-200/50 bg-white/50 flex justify-between items-center">
         <div className="text-sm">
           <span className="text-gray-500">Total Courses: </span>
