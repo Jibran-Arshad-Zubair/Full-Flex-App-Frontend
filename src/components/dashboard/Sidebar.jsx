@@ -5,7 +5,6 @@ import { FaBookOpen } from 'react-icons/fa';
 
 const Sidebar = ({ isOpen }) => {
   const location = useLocation();
-  
   const menuItems = [
     {
       name: 'Dashboard',
@@ -33,7 +32,6 @@ const Sidebar = ({ isOpen }) => {
       gradient: 'from-blue-400 to-blue-500'
     },
   ];
-
   return (
     <aside
       id="logo-sidebar"
@@ -42,7 +40,6 @@ const Sidebar = ({ isOpen }) => {
       } sm:translate-x-0`}
       aria-label="Sidebar"
     >
-    
       <div className="h-full px-4 pb-4 overflow-y-auto">
         <nav className="space-y-2 mt-4">
           {menuItems.map((item, index) => {
@@ -57,7 +54,6 @@ const Sidebar = ({ isOpen }) => {
                     : 'text-slate-700 hover:bg-gradient-to-r hover:from-slate-50 hover:to-purple-50 hover:text-slate-900'
                 }`}
               >
-             
                 <div className={`flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-200 ${
                   isActive 
                     ? 'bg-white/20 backdrop-blur-sm' 
@@ -67,13 +63,9 @@ const Sidebar = ({ isOpen }) => {
                     className: `w-5 h-5 ${isActive ? 'text-white' : 'text-white'}`
                   })}
                 </div>
-
-             
                 <span className="ml-3 font-medium text-sm tracking-wide">
                   {item.name}
                 </span>
-
-              
                 {item.badge && (
                   <span className={`ml-auto inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 text-xs font-bold rounded-full transition-all duration-200 ${
                     isActive
@@ -83,8 +75,6 @@ const Sidebar = ({ isOpen }) => {
                     {item.badge}
                   </span>
                 )}
-
-          
                 {isActive && (
                   <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-l-full shadow-sm"></div>
                 )}

@@ -5,30 +5,24 @@ import { useDispatch, useSelector } from "react-redux";
 import defaultLoginProfile from "../../assets/loginUserProfile.png";
 import { useNavigate } from "react-router-dom";
 import { setAuthUser } from "../../Redux/reduxSlices/userSlice";
-
 const UserDropdown = () => {
   const authUser = useSelector((state) => state.user.authUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
 const handleLogout = () => {
-  
   dispatch(setAuthUser(null));
-  
   localStorage.removeItem("token");
-
   navigate("/");
 };
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);

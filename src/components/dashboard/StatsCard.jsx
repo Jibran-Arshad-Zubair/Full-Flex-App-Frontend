@@ -38,9 +38,7 @@ const StatsCard = ({ title, value, icon, color }) => {
       whileHover={{ y: -5 }}
       className={`relative overflow-hidden rounded-xl border ${colors.border} ${colors.bg} p-6 shadow-sm transition-all duration-300 hover:shadow-md`}
     >
-  
       <div className={`absolute -right-6 -top-6 h-16 w-16 rounded-full ${colors.iconBg} opacity-20`}></div>
-      
       <div className="flex items-start justify-between">
         <div>
           <h3 className="text-sm font-medium text-gray-500">{title}</h3>
@@ -51,8 +49,6 @@ const StatsCard = ({ title, value, icon, color }) => {
           {React.cloneElement(icon, { className: "w-6 h-6" })}
         </div>
       </div>
-      
-      
       <div className="mt-4 flex items-center">
         <span className={`inline-flex items-center text-xs font-medium ${colors.text}`}>
           <svg
