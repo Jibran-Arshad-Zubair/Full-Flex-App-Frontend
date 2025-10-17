@@ -57,8 +57,6 @@ const NotificationsPanel = () => {
           timestamp: new Date(course.updatedAt).getTime(),
         });
       }
-
-    
       const createdDate = new Date(course.createdAt);
       const now = new Date();
       const daysDiff = (now - createdDate) / (1000 * 60 * 60 * 24);
@@ -75,8 +73,6 @@ const NotificationsPanel = () => {
         });
       }
     });
-
-
     return notifs
       .sort((a, b) => b.timestamp - a.timestamp)
       .slice(0, 10)
@@ -85,9 +81,7 @@ const NotificationsPanel = () => {
         unread: !readNotifications.has(notif.id)
       }));
   }, [myCourses, readNotifications]);
-
   const unreadCount = notifications.filter(n => n.unread).length;
-
   const handleMarkAllAsRead = () => {
     const newReadNotifications = new Set(readNotifications);
     notifications.forEach(notif => {
@@ -95,7 +89,6 @@ const NotificationsPanel = () => {
     });
     setReadNotifications(newReadNotifications);
   };
-
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-lg">
       <div className="px-6 py-4 border-b border-gray-200/50 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50">
@@ -158,7 +151,6 @@ const NotificationsPanel = () => {
           ))
         )}
       </div>
-
       <div className="px-6 py-3 border-t border-gray-200/50 flex justify-between items-center bg-gray-50">
         <button 
           className={`text-sm ${unreadCount > 0 ? 'text-indigo-600 hover:text-indigo-800' : 'text-gray-400 cursor-not-allowed'} transition-colors`}

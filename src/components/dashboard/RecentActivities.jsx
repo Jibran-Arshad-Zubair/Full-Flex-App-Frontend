@@ -2,19 +2,13 @@
 import { FiClock, FiUser, FiFileText, FiDownload, FiCheckCircle } from 'react-icons/fi';
 import { useSelector } from 'react-redux';
 import { useGetAllCoursesQuery } from '../../Redux/queries/course/courseApi';
-import React from 'react';
-
 const RecentActivities = () => {
   const { data: allCourses, isLoading } = useGetAllCoursesQuery();
   const authUser = useSelector((state) => state.user.authUser);
   const userId = authUser?.user?._id;
-
-  
   const myCourses = allCourses?.data?.filter(
     (course) => course.teacher._id === userId
   ) || [];
-
-  
   let activities = [];
   myCourses.forEach((course) => {
     
@@ -68,10 +62,7 @@ const RecentActivities = () => {
       });
     }
   });
-
-
   activities = activities.sort((a, b) => b.timestamp - a.timestamp).slice(0, 6);
-
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-lg">
       <div className="px-6 py-4 border-b border-gray-200/50 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50">
@@ -111,7 +102,6 @@ const RecentActivities = () => {
           ))
         )}
       </div>
-    
     </div>
   );
 };
