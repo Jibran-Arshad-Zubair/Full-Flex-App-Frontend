@@ -1,6 +1,6 @@
 import React from 'react'; 
 import { Link, useLocation } from 'react-router-dom';
-import { HiOutlineViewGrid, HiOutlineChatAlt2, HiOutlineUserGroup, HiOutlineCreditCard } from 'react-icons/hi';
+import { HiOutlineViewGrid, HiOutlineChatAlt2, HiOutlineUserGroup, HiOutlineCreditCard, HiOutlineInformationCircle } from 'react-icons/hi';
 import { FaBookOpen } from 'react-icons/fa';
 
 const Sidebar = ({ isOpen }) => {
@@ -23,6 +23,12 @@ const Sidebar = ({ isOpen }) => {
       name: 'Courses',
       icon: <FaBookOpen className="w-5 h-5" />,
       path: '/course',
+      gradient: 'from-blue-400 to-blue-500'
+    },
+    {
+      name: 'About',
+      icon: <HiOutlineInformationCircle className="w-5 h-5" />,
+      path: '/dashboard/about',
       gradient: 'from-blue-400 to-blue-500'
     },
     {

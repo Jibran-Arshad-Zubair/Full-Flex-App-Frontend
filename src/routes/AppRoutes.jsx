@@ -3,9 +3,11 @@ import { Routes, Route } from 'react-router-dom';
 import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
 import DashboardPage from '../pages/DashboardPage';
+import MainContent from '../components/dashboard/MainContent';
 import CheckoutPage from '../pages/CheckoutPage';
 import ChatPage from '../pages/ChatPage';
 import ProfilePage from '../pages/ProfilePage';
+import AboutPage from '../pages/AboutPage';
 import ComingSoonPage from '../components/dashboard/ComingSoonPage';
 import CoursesPage from '../pages/CoursesPage';
 import CourseDetailsPage from '../pages/CourseDetailsPage';
@@ -16,7 +18,10 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
-      <Route path="/dashboard" element={<DashboardPage />} />
+      <Route path="/dashboard" element={<DashboardPage />}>
+        <Route index element={<MainContent />} />
+        <Route path="about" element={<AboutPage />} />
+      </Route>
       <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/chat" element={<ChatPage />} />
       <Route path="/profile" element={<ProfilePage />} />
