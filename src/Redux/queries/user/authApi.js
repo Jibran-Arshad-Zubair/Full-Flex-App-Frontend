@@ -31,6 +31,15 @@ export const authApi = injectApiEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+    loginWithFacebook: builder.mutation({
+      query: (body) => ({
+        url: appendUrl("facebook-login"),
+        method: "post",
+        body,
+        // auth: true,
+      }),
+      invalidatesTags: ["User"],
+    }),
 
     getOtherUsers: builder.query({
       query: (id) => {
@@ -92,4 +101,5 @@ export const {
   useResetPasswordMutation,
   useForgetPasswordMutation,
   useSendOTPMutation,
+  useLoginWithFacebookMutation,
 } = authApi;

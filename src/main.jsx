@@ -8,6 +8,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import { store } from "./Redux/store.js";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import FacebookLogin from '@greatsumini/react-facebook-login';
 
 
 let persistor = persistStore(store);

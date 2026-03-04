@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import {
   useLoginUserMutation,
+  useLoginWithFacebookMutation,
   useLoginWithGoogleMutation,
 } from "../Redux/queries/user/authApi";
 import { useDispatch } from "react-redux";
@@ -15,12 +16,14 @@ import Logo from "../assets/e-learning-logo.png";
 import { GoogleLogin } from "@react-oauth/google";
 import { useState } from "react";
 import ForgotPasswordModal from "../components/ui/ForgotPasswordModal";
+import FacebookLogin from "@greatsumini/react-facebook-login";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [loginUser] = useLoginUserMutation();
   const [loginWithGoogle] = useLoginWithGoogleMutation();
+  const [loginWithFacebook] = useLoginWithFacebookMutation();
   const dispatch = useDispatch();
 
   const initialValues = {
@@ -29,9 +32,7 @@ const LoginPage = () => {
   };
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Invalid email address")
-      .required("Email is required"),
+    email: Yup.string().email("Invalid email address").required("Email is required"),
     password: Yup.string().required("Password is required"),
   });
 
@@ -76,6 +77,33 @@ const LoginPage = () => {
       toast.error(errorMessage, { duration: 3000 });
     }
   };
+  const handleFacebookSuccess = async (response) => {
+    try {
+      const { accessToken, userID } = response;
+
+      if (!accessToken || !userID) {
+        throw new Error("Invalid Facebook response");
+      }
+
+      const res = await loginWithFacebook({
+        accessToken,
+        userId: userID,
+      }).unwrap();
+
+      toast.success("Login successful", { duration: 3000 });
+
+      dispatch(setAuthUser(res.data));
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("authUser", JSON.stringify(res.data.user));
+
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 2000);
+    } catch (err) {
+      console.error("Facebook login error", err);
+      toast.error("Facebook login failed");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -84,12 +112,8 @@ const LoginPage = () => {
           <div className="hidden md:block md:w-1/2 bg-gradient-to-b from-cyan-400 to-blue-600">
             <div className="h-full flex items-center justify-center p-8">
               <div className="text-center">
-                <h2 className="text-3xl font-bold text-white mb-4">
-                  Welcome Back!
-                </h2>
-                <p className="text-indigo-100">
-                  Continue your journey with us.
-                </p>
+                <h2 className="text-3xl font-bold text-white mb-4">Welcome Back!</h2>
+                <p className="text-indigo-100">Continue your journey with us.</p>
                 <div className="mt-4">
                   <div className="w-24 h-24 mx-auto bg-white bg-opacity-20 rounded-full flex items-center justify-center">
                     <img
@@ -108,12 +132,26 @@ const LoginPage = () => {
                 <FaUserCircle className="h-8 w-8 text-blue-400" />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
-              Login to Your Account
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">Login to Your Account</h1>
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={() => toast.error("Google login failed")}
+            />
+            <FacebookLogin
+              appId={import.meta.env.VITE_FACEBOOK_APP_ID}
+              onSuccess={handleFacebookSuccess}
+              onFail={(error) => {
+                console.log("Facebook login failed:", error);
+                toast.error("Facebook login failed");
+              }}
+              render={({ onClick }) => (
+                <button
+                  onClick={onClick}
+                  className="w-full mt-4 flex justify-center items-center gap-2 py-2 px-4 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+                >
+                  Continue with Facebook
+                </button>
+              )}
             />
 
             <Formik
@@ -173,9 +211,7 @@ const LoginPage = () => {
                   <div className="w-full border-t border-gray-300"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">
-                    Don't have an account?
-                  </span>
+                  <span className="px-2 bg-white text-gray-500">Don't have an account?</span>
                 </div>
               </div>
 
