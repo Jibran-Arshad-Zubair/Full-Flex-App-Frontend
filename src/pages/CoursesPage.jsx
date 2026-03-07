@@ -7,7 +7,12 @@ import CreateCourseModal from "../components/course/CreateEditCourseModal";
 import Button from "../components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/course/LoadingSpinner";
-import {useCreateCourseMutation,useDeleteCourseMutation,useGetAllCoursesQuery,useUpdateCourseMutation,} from "../Redux/queries/course/courseApi";
+import {
+  useCreateCourseMutation,
+  useDeleteCourseMutation,
+  useGetAllCoursesQuery,
+  useUpdateCourseMutation,
+} from "../Redux/queries/course/courseApi";
 import toast from "react-hot-toast";
 import ConfirmationModal from "../components/ui/ConfirmationModal";
 
@@ -23,7 +28,8 @@ const CoursesPage = () => {
   const [modalMode, setModalMode] = useState("create");
   const [selectedCourse, setSelectedCourse] = useState(null);
   const navigate = useNavigate();
-  const {data: allCourses,error,isLoading} = useGetAllCoursesQuery(undefined, { refetchOnMountOrArgChange: true});
+  const { data: allCourses, error, isLoading } = useGetAllCoursesQuery(undefined, { refetchOnMountOrArgChange: true });
+  console.log("All courses data:", allCourses);
   useEffect(() => {
     if (allCourses?.data) {
       setCourses(allCourses.data);
@@ -81,11 +87,7 @@ const CoursesPage = () => {
       }).unwrap();
 
       setCourses((prev) =>
-        prev.map((course) =>
-          course._id === selectedCourse._id
-            ? res?.course || res?.data?.course
-            : course
-        )
+        prev.map((course) => (course._id === selectedCourse._id ? res?.course || res?.data?.course : course)),
       );
       toast.success("Course updated successfully");
       setIsModalOpen(false);
@@ -127,9 +129,7 @@ const CoursesPage = () => {
     setIsDeleting(true);
     try {
       await deleteCourse(courseToDelete._id).unwrap();
-      setCourses((prev) =>
-        prev.filter((course) => course._id !== courseToDelete._id)
-      );
+      setCourses((prev) => prev.filter((course) => course._id !== courseToDelete._id));
       toast.success("Course deleted successfully");
     } catch (error) {
       console.error("Error deleting course:", error);
@@ -154,11 +154,7 @@ const CoursesPage = () => {
     <div className="bg-gray-50 min-h-screen dark:bg-gray-900">
       <Navbar toggleSidebar={toggleSidebar} />
       <Sidebar isOpen={sidebarOpen} />
-      <div
-        className={`p-4 mt-10 sm:ml-64 transition-all duration-200 ${
-          sidebarOpen ? "ml-64" : ""
-        }`}
-      >
+      <div className={`p-4 mt-10 sm:ml-64 transition-all duration-200 ${sidebarOpen ? "ml-64" : ""}`}>
         <div className="p-4 md:p-8 max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-8 border-b border-gray-300 dark:border-gray-700 pb-6">
             <div className="text-center md:text-left">
@@ -186,29 +182,25 @@ const CoursesPage = () => {
               className="mt-8"
               text="Loading courses..."
             />
-          ) : error ? (
-            <p className="text-center mt-6 text-red-500">
-              Failed to load courses
-            </p>
-          ) : courses.length > 0 ? (
-            <CoursesTable
-              courses={courses}
-              onView={handleView}
-              onEdit={handleEdit}
-              onDelete={handleDeleteClick}
-            />
-          ) : (
-            <div className="text-center py-12">
-              <div className="text-gray-400 dark:text-gray-500 mb-4">
-                <FiBookOpen className="mx-auto text-4xl" />
+          ) : allCourses?.data ? (
+            courses.length > 0 ? (
+              <CoursesTable
+                courses={courses}
+                onView={handleView}
+                onEdit={handleEdit}
+                onDelete={handleDeleteClick}
+              />
+            ) : (
+              <div className="text-center py-12">
+                <div className="text-gray-400 dark:text-gray-500 mb-4">
+                  <FiBookOpen className="mx-auto text-4xl" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">No courses yet</h3>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating a new course.</p>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                No courses yet
-              </h3>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Get started by creating a new course.
-              </p>
-            </div>
+            )
+          ) : (
+            <p className="text-center mt-6 text-red-500">Failed to load courses</p>
           )}
         </div>
       </div>

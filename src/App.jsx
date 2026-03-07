@@ -24,10 +24,11 @@ export default function App() {
       console.log("Queryyyy", query);
       dispatch(setSocket(socket));
 
-      socket.on('getOnlineUsers'), (onlineUsers) => {
-        console.log("Online Users from socket", onlineUsers);
-        dispatch(setOnlineUsers(onlineUsers));
-      };
+      (socket.on("getOnlineUsers"),
+        (onlineUsers) => {
+          console.log("Online Users from socket", onlineUsers);
+          dispatch(setOnlineUsers(onlineUsers));
+        });
     } else {
       socket.disconnect();
     }
@@ -40,9 +41,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <Elements stripe={stripePromise}>
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
           <AppRoutes />
-           <ChatBot />
+          <ChatBot />
         </div>
       </Elements>
     </BrowserRouter>

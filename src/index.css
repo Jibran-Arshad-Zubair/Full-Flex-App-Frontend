@@ -39,3 +39,20 @@
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
+
+@layer base {
+  :root {
+    --bg-primary: 249 250 251;
+    --text-primary: 17 24 39;
+  }
+
+  .dark {
+    --bg-primary: 17 24 39;
+    --text-primary: 249 250 251;
+  }
+}
+
+/* Smooth transitions */
+* {
+  @apply transition-colors duration-200;
+}

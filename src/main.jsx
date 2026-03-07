@@ -9,6 +9,7 @@ import { persistStore } from "redux-persist";
 import { store } from "./Redux/store.js";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import FacebookLogin from '@greatsumini/react-facebook-login';
+import { ThemeProvider } from "./context/ThemeContext";
 
 
 let persistor = persistStore(store);
@@ -17,8 +18,10 @@ createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <PersistGate loading={null} persistor={persistor}>
-          <App />
-          <Toaster />
+          <ThemeProvider> 
+            <App />
+            <Toaster />
+          </ThemeProvider>
         </PersistGate>
       </GoogleOAuthProvider>
     </Provider>

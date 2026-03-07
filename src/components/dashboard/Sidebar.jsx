@@ -2,9 +2,11 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { HiOutlineViewGrid, HiOutlineChatAlt2, HiOutlineUserGroup, HiOutlineCreditCard, HiOutlineInformationCircle } from 'react-icons/hi';
 import { FaBookOpen } from 'react-icons/fa';
+import { useTheme } from '../../context/ThemeContext';
 
 const Sidebar = ({ isOpen }) => {
   const location = useLocation();
+  const { isDarkMode } = useTheme();
   const menuItems = [
     {
       name: 'Dashboard',
@@ -41,7 +43,11 @@ const Sidebar = ({ isOpen }) => {
   return (
     <aside
       id="logo-sidebar"
-      className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-all duration-300 ease-in-out bg-gradient-to-b from-slate-50 via-white to-slate-50 border-r border-slate-200/60 shadow-xl ${
+      className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-all duration-300 ease-in-out shadow-xl ${
+        isDarkMode
+          ? 'bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 border-r border-gray-700'
+          : 'bg-gradient-to-b from-slate-50 via-white to-slate-50 border-r border-slate-200/60'
+      } ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
       } sm:translate-x-0`}
       aria-label="Sidebar"
@@ -57,6 +63,8 @@ const Sidebar = ({ isOpen }) => {
                 className={`group relative flex items-center p-3 rounded-xl transition-all duration-200 hover:scale-[1.02] hover:shadow-md ${
                   isActive
                     ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg shadow-purple-500/25`
+                    : isDarkMode
+                    ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
                     : 'text-slate-700 hover:bg-gradient-to-r hover:from-slate-50 hover:to-purple-50 hover:text-slate-900'
                 }`}
               >
