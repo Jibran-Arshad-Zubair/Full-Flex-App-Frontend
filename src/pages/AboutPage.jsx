@@ -69,7 +69,7 @@ const TeamMemberCard = memo(({ member, index }) => {
             </div>
             
             {/* Member info */}
-            <h3 className="text-lg font-semibold text-gray-900  mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white  mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
               {member.name}
             </h3>
             <p className="text-blue-600 dark:text-blue-400 font-medium text-xs mb-2">
@@ -113,10 +113,10 @@ const ValueCard = memo(({ value, index }) => (
       <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-gray-800 dark:to-gray-700 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400 mb-3 group-hover:scale-110 transition-transform duration-500 group-hover:rotate-3">
         {value.icon}
       </div>
-      <h4 className="font-semibold text-gray-900 mb-1 text-sm">
+      <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
         {value.title}
       </h4>
-      <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+      <p className="text-xs text-gray-600 dark:text-gray-400 mb-0">
         {value.description}
       </p>
     </div>
@@ -195,7 +195,7 @@ export default function AboutPage() {
 
       <div className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'lg:ml-64' : 'lg:ml-64'}`}>
         <main className="pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          {/* Hero Section */}
+        
           <div className="text-center mb-12 animate-fade-in">
             <div className="inline-block mb-3">
               <span className="px-3 py-1 bg-blue-100 dark:bg-gray-800 text-blue-600 dark:text-blue-400 rounded-full text-xs font-medium">
@@ -210,14 +210,14 @@ export default function AboutPage() {
               We're on a mission to make quality education accessible, engaging, and effective 
               for learners and creators worldwide.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            {/* <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button className="px-6 py-3 text-sm shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
                 Start Learning
               </Button>
               <Button className="px-6 py-3 text-sm bg-transparent border-2 border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-800 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
                 Become Instructor
               </Button>
-            </div>
+            </div> */}
           </div>
 
           {/* Stats Section */}
@@ -239,7 +239,7 @@ export default function AboutPage() {
                 <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
                   {stat.label}
                 </p>
-                <span className="inline-block px-1.5 py-0.5 bg-green-100 dark:bg-green-900/40 text-white dark:text-white text-[10px] rounded-full">
+                <span className="inline-block px-1.5 py-0.5 bg-green-400 dark:bg-green-600/40 text-white dark:text-white text-[10px] rounded-full">
                   {stat.change}
                 </span>
               </Card>
@@ -253,11 +253,11 @@ export default function AboutPage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                   <FiTarget className="w-6 h-6 text-white" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 ">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-0">
                   Our Mission
                 </h2>
               </div>
-              <p className="text-sm text-gray-700  leading-relaxed mb-4">
+              <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
                 E-Learning is revolutionizing online education by providing flexible, 
                 modern tools that empower creators and engage learners. 
                 We believe in simple UX, blazing-fast performance, and features that 
@@ -280,7 +280,7 @@ export default function AboutPage() {
             </Card>
 
             {/* Contact Card */}
-            <Card className="p-6 bg-gradient-to-br from-blue-600 to-purple-600 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+           <Card className="p-6 bg-gradient-to-br bg-gradient-to-br from-blue-500 to-purple-600 dark:from-gray-800 dark:to-gray-700 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
               <h2 className="text-2xl font-bold text-white mb-4">Let's Connect</h2>
               <p className="text-white/90 text-sm mb-5 leading-relaxed">
                 Have questions or want to collaborate? We'd love to hear from you.
@@ -314,7 +314,7 @@ export default function AboutPage() {
 
               <Button 
                 onClick={() => window.location.href = 'mailto:hello@elearning.com'}
-                className="w-full bg-blue-500 text-white hover:bg-blue-600 font-semibold py-3 text-sm shadow-xl"
+                className="w-full bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 font-semibold py-3 text-sm shadow-xl"
               >
                 Send us a message
                 <FiChevronRight className="inline ml-1 w-4 h-4" />
@@ -362,7 +362,7 @@ export default function AboutPage() {
             <div className="relative p-8 text-center">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10" />
               <div className="relative z-10">
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 dark:text-white">
                   Ready to Start Learning?
                 </h2>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-5 max-w-2xl mx-auto">
