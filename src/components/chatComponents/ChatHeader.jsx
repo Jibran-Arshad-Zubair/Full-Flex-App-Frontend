@@ -29,6 +29,7 @@ if (!selectedUser) {
       </div>
     </div>
     <div>
+      
       <h2 className="font-semibold text-gray-800 dark:text-gray-100">{selectedUser.fullName}</h2>
       <p className="text-xs text-gray-500 dark:text-gray-400">Online</p>
     </div>
