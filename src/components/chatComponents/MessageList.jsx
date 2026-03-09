@@ -49,59 +49,54 @@ const MessageList = () => {
   }
   return (
     <>
-    <div className="flex-1 overflow-y-auto p-4 space-y-4">
-      {messages.length === 0 ? (
-        <p className="text-gray-500">No messages yet.</p>
-      ) : (
-        messages.map((message) => {
-          const isMe = message.senderId === senderId;
-
-          return (
-            <div
-              key={message._id}
-              className={`chat ${isMe ? "chat-end" : "chat-start"}`}
-            >
-              <div className="chat-image avatar">
-                <div className="w-10 rounded-full">
-                  {isMe ? (
-                    <img alt="User avatar" 
-                    src={authUser?.user?.profilePhoto || defaultLoginProfile}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = defaultLoginProfile;
-                    }}
-                    />
-                  ) : (
-                    <img
-                      alt="User avatar"
-                      src={selectedUser?.profilePhoto || defaultProfile}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = defaultProfile;
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
-
-              <div className="chat-header">
-                {isMe ? "You" : selectedUser?.fullName}
-                <time className="text-xs opacity-50 ml-2">
-                  {new Date(message.createdAt).toLocaleTimeString()}
-                </time>
-              </div>
-
-              <div
-                className={`chat-bubble ${isMe ? "chat-bubble-primary" : ""}`}
-              >
-                {message.message}
-              </div>
+    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-800">
+  {messages.length === 0 ? (
+    <p className="text-gray-500 dark:text-gray-400">No messages yet.</p>
+  ) : (
+    messages.map((message) => {
+      const isMe = message.senderId === senderId;
+      return (
+        <div key={message._id} className={`chat ${isMe ? "chat-end" : "chat-start"}`}>
+          <div className="chat-image avatar">
+            <div className="w-10 rounded-full">
+              {isMe ? (
+                <img
+                  alt="User avatar"
+                  src={authUser?.user?.profilePhoto || defaultLoginProfile}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = defaultLoginProfile;
+                  }}
+                />
+              ) : (
+                <img
+                  alt="User avatar"
+                  src={selectedUser?.profilePhoto || defaultProfile}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = defaultProfile;
+                  }}
+                />
+              )}
             </div>
-          );
-        })
-      )}
-     <div ref={messagesEndRef} />
-    </div>
+          </div>
+
+          <div className="chat-header text-gray-800 dark:text-gray-100">
+            {isMe ? "You" : selectedUser?.fullName}
+            <time className="text-xs opacity-50 ml-2 dark:text-gray-400">
+              {new Date(message.createdAt).toLocaleTimeString()}
+            </time>
+          </div>
+
+          <div className={`chat-bubble ${isMe ? "chat-bubble-primary" : "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100"}`}>
+            {message.message}
+          </div>
+        </div>
+      );
+    })
+  )}
+  <div ref={messagesEndRef} />
+</div>
     </>
   );
 };

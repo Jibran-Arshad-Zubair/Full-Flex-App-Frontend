@@ -33,54 +33,54 @@ const Sidebar = () => {
   );
 
   return (
-    <div className="w-full md:w-80 lg:w-96 bg-white border-r border-gray-200 flex flex-col">
-      <div className="p-4 border-b border-blue-500 flex">
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="flex items-center focus:outline-none group"
-          aria-label="Back to dashboard"
-        >
-          <FiArrowLeft className="h-5 w-5 text-gray-600 group-hover:text-blue-500 transition-colors mr-4" />
-          <h1 className="group-hover:text-blue-500 transition-colors text-xl font-bold text-gray-800">
-            Dashboard
-          </h1>
-        </button>
-      </div>
+    <div className="w-full md:w-80 lg:w-96 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+  <div className="p-4 border-b border-blue-500 flex">
+    <button
+      onClick={() => navigate("/dashboard")}
+      className="flex items-center focus:outline-none group"
+      aria-label="Back to dashboard"
+    >
+      <FiArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-300 group-hover:text-blue-500 transition-colors mr-4" />
+      <h1 className="group-hover:text-blue-500 transition-colors text-xl font-bold text-gray-800 dark:text-gray-100">
+        Dashboard
+      </h1>
+    </button>
+  </div>
 
-      <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+  <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-      <div className="flex-1 overflow-y-auto">
-        {isLoading && (
-           <LoadingSpinner size="medium" className="mx-auto mt-4" text="Loading users..." />
-        )}
-        {isError && (
-          <p className="p-4 text-sm text-red-500 text-center">Failed to load users.</p>
-        )}
+  <div className="flex-1 overflow-y-auto">
+    {isLoading && (
+       <LoadingSpinner size="medium" className="mx-auto mt-4" text="Loading users..." />
+    )}
+    {isError && (
+      <p className="p-4 text-sm text-red-500 text-center">Failed to load users.</p>
+    )}
 
-        {!isLoading && !isError && filteredUsers.length === 0 && (
-          <p className="p-4 text-sm text-gray-600 text-center">
-            No user found.
-          </p>
-        )}
+    {!isLoading && !isError && filteredUsers.length === 0 && (
+      <p className="p-4 text-sm text-gray-600 dark:text-gray-400 text-center">
+        No user found.
+      </p>
+    )}
 
-        {!isLoading &&
-          !isError &&
-          filteredUsers.map((user) => (
-            <UserItem
-              key={user._id}
-              name={user.fullName || user.userName}
-              lastMessage={"Start chatting..."}
-              time={""}
-              unread={false}
-              isTyping={false}
-              profilePhoto={user.profilePhoto}
-              onClick={() => {
-                dispatch(setSelectedUser(user));
-              }}
-            />
-          ))}
-      </div>
-    </div>
+    {!isLoading &&
+      !isError &&
+      filteredUsers.map((user) => (
+        <UserItem
+          key={user._id}
+          name={user.fullName || user.userName}
+          lastMessage={"Start chatting..."}
+          time={""}
+          unread={false}
+          isTyping={false}
+          profilePhoto={user.profilePhoto}
+          onClick={() => {
+            dispatch(setSelectedUser(user));
+          }}
+        />
+      ))}
+  </div>
+</div>
   );
 };
 
