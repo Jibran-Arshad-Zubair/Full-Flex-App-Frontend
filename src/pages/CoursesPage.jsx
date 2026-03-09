@@ -162,7 +162,7 @@ const CoursesPage = () => {
                 Course Management
               </h1>
               <p className="mt-2 text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto md:mx-0">
-                Manage all your courses in one place.
+                Manage all your courses in one place
               </p>
             </div>
 
