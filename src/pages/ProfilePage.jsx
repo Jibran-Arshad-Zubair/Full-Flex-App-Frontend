@@ -120,7 +120,7 @@ const ProfilePage = () => {
                         <span className="font-medium text-sm">{item.label}</span>
                       </div>
                       <p
-                        className={`text-gray-800 dark:text-gray-100 font-medium pl-11 ${
+                        className={`text-gray-800 dark:text-gray-100 font-medium pl-11 truncate ${
                           item.label !== "Email" ? "capitalize" : ""
                         }`}
                       >
