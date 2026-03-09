@@ -372,11 +372,7 @@ export default function AboutPage() {
                   <Button className="px-6 py-3 text-sm shadow-lg">
                     Explore Courses
                   </Button>
-                  <Link to="/">
-                    <Button className="px-6 py-3 text-sm bg-transparent border-2 border-blue-600 text-blue-600 hover:bg-blue-50  shadow-lg">
-                      Back to Home
-                    </Button>
-                  </Link>
+                  
                 </div>
               </div>
             </div>

@@ -7,13 +7,7 @@ import Card from "../ui/Card";
 import { FiUpload, FiX, FiPlus, FiTrash2 } from "react-icons/fi";
 import CreatableSelect from "react-select/creatable";
 
-const CreateCourseModal = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  mode = "create",
-  course = null,
-}) => {
+const CreateCourseModal = ({ isOpen, onClose, onSubmit, mode = "create", course = null }) => {
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
 
   const [categoryOptions, setCategoryOptions] = useState([
@@ -29,29 +23,22 @@ const CreateCourseModal = ({
     price: course?.price || "",
     thumbnail: null,
     category: course?.category || "",
-    videos:
-      course?.videos?.length > 0 ? course.videos : [{ title: "", url: "" }],
+    videos: course?.videos?.length > 0 ? course.videos : [{ title: "", url: "" }],
   };
- 
 
- useEffect(() => {
-  if (course?.category) {
-    const exists = categoryOptions.some(
-      (opt) => opt.value.toLowerCase() === course.category.toLowerCase()
-    );
+  useEffect(() => {
+    if (course?.category) {
+      const exists = categoryOptions.some((opt) => opt.value.toLowerCase() === course.category.toLowerCase());
 
-    if (!exists) {
-      setCategoryOptions((prev) => [
-        ...prev,
-        { value: course.category, label: course.category },
-      ]);
+      if (!exists) {
+        setCategoryOptions((prev) => [...prev, { value: course.category, label: course.category }]);
+      }
     }
-  }
 
-  if (course?.thumbnail && typeof course.thumbnail === "string") {
-    setThumbnailPreview(course.thumbnail);
-  }
-}, [course]);
+    if (course?.thumbnail && typeof course.thumbnail === "string") {
+      setThumbnailPreview(course.thumbnail);
+    }
+  }, [course]);
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
@@ -73,26 +60,51 @@ const CreateCourseModal = ({
 
   if (!isOpen) return null;
 
+  const selectStyles = {
+    control: (provided) => ({
+      ...provided,
+      backgroundColor: "var(--tw-bg-opacity) ? '' : ''",
+    }),
+    menu: (provided) => ({
+      ...provided,
+      backgroundColor: "#1f2937",
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "#e5e7eb",
+    }),
+    input: (provided) => ({
+      ...provided,
+      color: "#e5e7eb",
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isFocused ? "#374151" : "#1f2937",
+      color: "#e5e7eb",
+    }),
+  };
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div className="fixed inset-0 transition-opacity" onClick={onClose}>
-          <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+        <div
+          className="fixed inset-0 transition-opacity"
+          onClick={onClose}
+        >
+          <div className="absolute inset-0 bg-gray-500 dark:bg-black opacity-75"></div>
         </div>
 
-        <span className="hidden sm:inline-block sm:align-middle sm:h-screen">
-          &#8203;
-        </span>
+        <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
 
-        <Card className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
+        <Card className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
           <div className="px-6 py-4">
             <div className="flex justify-between items-center mb-4 border-b pb-2">
-              <h3 className="text-lg font-bold text-gray-900">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                 {mode === "edit" ? "Edit Course" : "Create New Course"}
               </h3>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-500"
+                className="text-gray-400 hover:text-gray-500 dark:text-gray-400 dark:hover:text-gray-200"
               >
                 <FiX className="h-6 w-6" />
               </button>
@@ -115,14 +127,14 @@ const CreateCourseModal = ({
                     />
 
                     <div className="mb-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Description
                       </label>
                       <Field
                         as="textarea"
                         name="description"
                         rows={3}
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md p-2"
+                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-md p-2"
                         placeholder="Describe your course and it should be clear and must not exceed 100 words...."
                       />
                       <ErrorMessage
@@ -143,36 +155,25 @@ const CreateCourseModal = ({
                       </div>
 
                       <div className="flex-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           Category
                         </label>
                         <CreatableSelect
                           name="category"
                           options={categoryOptions}
-                          value={
-                            categoryOptions.find(
-                              (o) => o.value === values.category
-                            ) || null
-                          }
+                          value={categoryOptions.find((o) => o.value === values.category) || null}
                           onChange={(option) => {
-                            setFieldValue(
-                              "category",
-                              option ? option.value : ""
-                            );
+                            setFieldValue("category", option ? option.value : "");
                             setFieldTouched("category", true, false);
                           }}
                           onCreateOption={(inputValue) => {
                             const trimmed = inputValue.trim();
                             if (!trimmed) return;
 
-                            const exists = categoryOptions.some(
-                              (o) =>
-                                o.value.toLowerCase() === trimmed.toLowerCase()
-                            );
+                            const exists = categoryOptions.some((o) => o.value.toLowerCase() === trimmed.toLowerCase());
                             const newOpt = { value: trimmed, label: trimmed };
 
-                            if (!exists)
-                              setCategoryOptions((prev) => [...prev, newOpt]);
+                            if (!exists) setCategoryOptions((prev) => [...prev, newOpt]);
 
                             setFieldValue("category", trimmed);
                             setFieldTouched("category", true, false);
@@ -181,6 +182,7 @@ const CreateCourseModal = ({
                           placeholder="Select or create a category"
                           className="text-sm"
                           classNamePrefix="rs"
+                          styles={selectStyles}
                         />
                         <ErrorMessage
                           name="category"
@@ -191,21 +193,19 @@ const CreateCourseModal = ({
                     </div>
 
                     <div className="mb-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Thumbnail
                       </label>
                       <div className="mt-1 flex items-center">
                         <label className="cursor-pointer">
-                          <span className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                          <span className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                             <FiUpload className="-ml-1 mr-2 h-5 w-5 text-gray-500" />
                             Upload
                           </span>
                           <input
                             type="file"
                             className="sr-only"
-                            onChange={(e) =>
-                              handleThumbnailChange(e, setFieldValue)
-                            }
+                            onChange={(e) => handleThumbnailChange(e, setFieldValue)}
                             accept="image/*"
                           />
                         </label>
@@ -235,9 +235,7 @@ const CreateCourseModal = ({
                       {({ push, remove }) => (
                         <div className="space-y-4">
                           <div className="flex justify-between items-center">
-                            <h4 className="text-sm font-medium text-gray-700">
-                              Course Videos
-                            </h4>
+                            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Course Videos</h4>
                             <button
                               type="button"
                               onClick={() => push({ title: "", url: "" })}
@@ -250,10 +248,10 @@ const CreateCourseModal = ({
                           {values.videos.map((video, index) => (
                             <div
                               key={index}
-                              className="border border-gray-200 rounded-lg p-4"
+                              className="border border-gray-200 dark:border-gray-600 rounded-lg p-4"
                             >
                               <div className="flex justify-between items-center mb-2">
-                                <h5 className="text-sm font-medium">
+                                <h5 className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                   Video {index + 1}
                                 </h5>
                                 {values.videos.length > 1 && (
@@ -292,7 +290,7 @@ const CreateCourseModal = ({
                     <Button
                       type="button"
                       onClick={onClose}
-                      className="bg-gray-400 text-gray-700 hover:bg-gray-500"
+                      className="bg-gray-400 text-gray-700 dark:text-gray-200 hover:bg-gray-500"
                     >
                       Cancel
                     </Button>
@@ -306,8 +304,8 @@ const CreateCourseModal = ({
                           ? "Updating..."
                           : "Creating..."
                         : mode === "edit"
-                        ? "Update Course"
-                        : "Create Course"}
+                          ? "Update Course"
+                          : "Create Course"}
                     </Button>
                   </div>
                 </Form>
