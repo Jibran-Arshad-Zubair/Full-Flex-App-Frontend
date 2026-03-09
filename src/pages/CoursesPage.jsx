@@ -29,7 +29,7 @@ const CoursesPage = () => {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const navigate = useNavigate();
   const { data: allCourses, error, isLoading } = useGetAllCoursesQuery(undefined, { refetchOnMountOrArgChange: true });
-  console.log("All courses data:", allCourses);
+  // console.log("All courses data:", allCourses);
   useEffect(() => {
     if (allCourses?.data) {
       setCourses(allCourses.data);

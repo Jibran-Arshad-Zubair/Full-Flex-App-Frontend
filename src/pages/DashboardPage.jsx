@@ -12,7 +12,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+     <div className="bg-gray-100 dark:bg-gray-800 min-h-screen transition-colors duration-300">
       <Navbar toggleSidebar={toggleSidebar} />
   <Sidebar isOpen={sidebarOpen} />
   {/* Outlet will render nested dashboard routes (index -> MainContent, /about -> AboutPage, etc.) */}

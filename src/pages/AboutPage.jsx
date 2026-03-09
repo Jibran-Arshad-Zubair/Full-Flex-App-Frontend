@@ -85,7 +85,7 @@ const TeamMemberCard = memo(({ member, index }) => {
                 <a
                   key={idx}
                   href={social.href}
-                  className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/30 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 hover:scale-110"
+                  className="p-1.5 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/30 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 hover:scale-110"
                   aria-label={social.label}
                   target="_blank"
                   rel="noopener noreferrer"

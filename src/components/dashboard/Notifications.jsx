@@ -90,79 +90,108 @@ const NotificationsPanel = () => {
     setReadNotifications(newReadNotifications);
   };
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-lg">
-      <div className="px-6 py-4 border-b border-gray-200/50 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50">
-        <h3 className="text-lg font-semibold text-gray-800 flex items-center">
-          <FiBell className={`mr-2 text-indigo-600 ${unreadCount > 0 ? 'animate-pulse' : ''}`} />
-          Notifications
-          {unreadCount > 0 && (
-            <span className="ml-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
-              {unreadCount} new
-            </span>
-          )}
-        </h3>
-      </div>
+  <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-lg transition-colors">
 
-      <div className="divide-y divide-gray-200/50 max-h-96 overflow-y-auto">
-        {isLoading ? (
-          <div className="p-8 text-center text-gray-500">
-            <FiClock className="w-6 h-6 mx-auto mb-2 animate-spin" />
-            Loading notifications...
-          </div>
-        ) : notifications.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">
-            <FiBell className="w-6 h-6 mx-auto mb-2" />
-            No notifications yet
-          </div>
-        ) : (
-          notifications.map((notification) => (
-            <div 
-              key={notification.id} 
-              className={`p-4 ${notification.unread ? 'bg-blue-50/50' : 'bg-white'} hover:bg-gray-50 transition-colors relative group`}
-              onClick={() => {
-                if (notification.unread) {
-                  setReadNotifications(prev => new Set([...prev, notification.id]));
-                }
-              }}
-            >
-              {notification.priority === "high" && (
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-red-500 rounded-r"></div>
-              )}
-              
-              <div className="flex items-start">
-                <div className="p-2 rounded-lg bg-white border border-gray-200 shadow-xs mr-3 group-hover:shadow-md transition-shadow">
-                  {notification.icon}
+    {/* Header */}
+    <div className="px-6 py-4 border-b border-gray-200/50 dark:border-gray-700 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700">
+      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center">
+        <FiBell className={`mr-2 text-indigo-600 dark:text-indigo-400 ${unreadCount > 0 ? 'animate-pulse' : ''}`} />
+        Notifications
+
+        {unreadCount > 0 && (
+          <span className="ml-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+            {unreadCount} new
+          </span>
+        )}
+      </h3>
+    </div>
+
+    {/* Notifications List */}
+    <div className="divide-y divide-gray-200/50 dark:divide-gray-700 max-h-96 overflow-y-auto">
+
+      {isLoading ? (
+        <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+          <FiClock className="w-6 h-6 mx-auto mb-2 animate-spin" />
+          Loading notifications...
+        </div>
+
+      ) : notifications.length === 0 ? (
+
+        <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+          <FiBell className="w-6 h-6 mx-auto mb-2" />
+          No notifications yet
+        </div>
+
+      ) : (
+        notifications.map((notification) => (
+          <div
+            key={notification.id}
+            className={`p-4 ${
+              notification.unread
+                ? 'bg-blue-50/50 dark:bg-blue-900/20'
+                : 'bg-white dark:bg-gray-800'
+            } hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors relative group`}
+            onClick={() => {
+              if (notification.unread) {
+                setReadNotifications(prev => new Set([...prev, notification.id]));
+              }
+            }}
+          >
+
+            {notification.priority === "high" && (
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-red-500 rounded-r"></div>
+            )}
+
+            <div className="flex items-start">
+
+              {/* Icon */}
+              <div className="p-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-xs mr-3 group-hover:shadow-md transition-shadow">
+                {notification.icon}
+              </div>
+
+              {/* Content */}
+              <div className="flex-1">
+                <div className="flex items-start justify-between">
+
+                  <h4 className="font-medium text-gray-800 dark:text-gray-200">
+                    {notification.title}
+
+                    {notification.unread && (
+                      <span className="ml-2 w-2 h-2 inline-block bg-red-500 rounded-full"></span>
+                    )}
+                  </h4>
+
+                  <span className="text-xs text-gray-400 dark:text-gray-500">
+                    {notification.time}
+                  </span>
                 </div>
 
-                <div className="flex-1">
-                  <div className="flex items-start justify-between">
-                    <h4 className="font-medium text-gray-800">
-                      {notification.title}
-                      {notification.unread && (
-                        <span className="ml-2 w-2 h-2 inline-block bg-red-500 rounded-full"></span>
-                      )}
-                    </h4>
-                    <span className="text-xs text-gray-400">{notification.time}</span>
-                  </div>
-                  <p className="text-sm text-gray-600 mt-1">{notification.message}</p>
-                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  {notification.message}
+                </p>
               </div>
             </div>
-          ))
-        )}
-      </div>
-      <div className="px-6 py-3 border-t border-gray-200/50 flex justify-between items-center bg-gray-50">
-        <button 
-          className={`text-sm ${unreadCount > 0 ? 'text-indigo-600 hover:text-indigo-800' : 'text-gray-400 cursor-not-allowed'} transition-colors`}
-          onClick={handleMarkAllAsRead}
-          disabled={unreadCount === 0}
-        >
-          Mark all as read
-        </button>
-       
-      </div>
+          </div>
+        ))
+      )}
     </div>
-  );
+
+    {/* Footer */}
+    <div className="px-6 py-3 border-t border-gray-200/50 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-900">
+      <button
+        className={`text-sm ${
+          unreadCount > 0
+            ? 'text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300'
+            : 'text-gray-400 cursor-not-allowed'
+        } transition-colors`}
+        onClick={handleMarkAllAsRead}
+        disabled={unreadCount === 0}
+      >
+        Mark all as read
+      </button>
+    </div>
+  </div>
+);
 };
 
 export default NotificationsPanel;
