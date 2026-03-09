@@ -54,14 +54,14 @@ const MessageList = () => {
 
   if (isError) {
     return (
-      <div className="flex-1 flex items-center justify-center p-4">
+      <div className="w-full flex items-center justify-center p-4 min-h-[300px]">
         <NoConversationComponent selectedUser={selectedUser} />
       </div>
     );
   }
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+    <div className="w-full px-4 py-6 space-y-4 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
       {messages.length === 0 ? (
         <div className="flex items-center justify-center h-full">
           <p className="text-gray-500 dark:text-gray-400 text-center">

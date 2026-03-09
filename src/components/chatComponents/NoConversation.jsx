@@ -2,7 +2,7 @@ import { FiMessageSquare, FiUserPlus, FiSend } from 'react-icons/fi';
 
 const NoConversationComponent = ({ selectedUser }) => {
   return (
-    <div className="flex flex-col items-center justify-center h-full p-6 text-center bg-gray-50 dark:bg-gray-800">
+    <div className="flex flex-col items-center justify-center min-h-full p-6 text-center bg-gray-50 dark:bg-gray-800">
      
       <div className="relative mb-8">
         <div className="w-40 h-40 md:w-48 md:h-48 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
